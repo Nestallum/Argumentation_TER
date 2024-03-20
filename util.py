@@ -1,5 +1,17 @@
 univers_graph={"i":["a","b","c"],"b":["e"],"a":["d"],"c":[],"e":[],"d":[]}
+opinion_graph={"i":[],"d":[]}
 
+def Att_Arg(OG,UG):
+    
+    liste_adjacence_att={}
+    print(UG)
+    for key in OG.keys():
+        liste_adjacence_att[key]=[]
+        for key2,value2 in UG.items() :
+            if(key in value2):
+                liste_adjacence_att[key].append(key2)
+                
+    return liste_adjacence_att
 
 def Hbs(graph,root,dict={}):
     
@@ -19,3 +31,5 @@ def Hbs(graph,root,dict={}):
         return 1/(1+sum)
     
 print(Hbs(univers_graph,"i"))
+
+print(Att_Arg(opinion_graph,univers_graph))
