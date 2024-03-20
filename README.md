@@ -17,4 +17,4 @@ En effet, l’objectif est de montrer et mesurer via une étude expérimentale, 
 **Références :
 [1] Louise Dupuis de Tarlé, Elise Bonzon, and Nicolas Maudet. “Multiagent Dynamics of Gradual Argumentation Semantics”. In : 21st International Conference on Autonomous Agents and Multiagent Systems
 (AAMAS 2022). Ed. by Piotr Faliszewski, Viviana Mascardi, Catherine Pelachaud, and Matthew E. Taylor.
-Online. Auckland (virtual), New Zealand, May 2022. url : [https://hal.archives-ouvertes.fr/hal03584238](https://hal.archives-ouvertes.fr/hal03584238).**
+Online. Auckland (virtual), New Zealand, May 2022.**
