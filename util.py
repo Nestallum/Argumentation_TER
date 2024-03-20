@@ -37,8 +37,7 @@ def Create_OG(arguments,UG):
         
     return OG
 
-def Hbs(graph : dict ,root:str ,dict={})-> float:
-
+def Hbs(graph : dict ,root : str )-> float:
 
     """ 
     Calculates and returns the Belief Strength (Hbs) of an argument.
@@ -48,21 +47,14 @@ def Hbs(graph : dict ,root:str ,dict={})-> float:
     - Otherwise, the Belief Strength (Hbs) is calculated as 1 divided by the total_Hbs of the Belief Strengths (Hbs)
       of all attacking arguments, plus 1.
     """
-     
-    if(root in dict.keys()):
-        return dict[root]
-    
     # If nobody attacks the argument, the value is of his Hbs 1.
     if((len(graph[root])) == 0): 
         return 1
-    
     else :
         # Sums the Belief Strengths (Hbs) of all attacking arguments.
-        total_Hbs = 0                 
-        for i in range(len(graph[root])):
-            total_Hbs += Hbs(graph,(graph[root])[i],dict)
-            
-        dict[root] = 1/(1+total_Hbs)
+        total_Hbs = 0         
+        for i in graph[root]:
+            total_Hbs += Hbs(graph,i,dict)
         # Calculate and return the Belief Strength (Hbs) of the argument.
         return 1/(1+total_Hbs)
     
@@ -70,5 +62,5 @@ def Hbs(graph : dict ,root:str ,dict={})-> float:
 
 
     
-# print(Hbs(universe_graph,"i"))
+
 

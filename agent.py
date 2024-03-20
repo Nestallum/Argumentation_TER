@@ -55,6 +55,7 @@ class agent :
        low_borne=self.Vk-self.cl
        high_borne=self.Vk+self.cl
        actual_value=Hbs(PG,"i")
+       
        #l'agent est deja dans al zone de confort donc il ne joue pas
        if(actual_value >= low_borne and actual_value <= high_borne):
            
@@ -88,14 +89,17 @@ class agent :
            print("\naucun arguments est assez bon donc aucun ajout ")
            return PG
        
+       
        arguments=[keys for keys in PG]
+       print(arguments)
        #il joue un arguments qui le rapproche de sa zone de confort  
        arguments.append(best_arg[0])
-       print(arguments)
+       
        print(f"\n {self.name}  rajoute l'argument {best_arg[0]} au public graph ")
        
        return Create_OG(arguments,UG)
    
 
-   
-print(agent(1,OG,UG).best_next_move(PG,UG))
+ 
+print(Hbs(PG,"i")) 
+print(Hbs(OG,"i")) 
