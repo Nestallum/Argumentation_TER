@@ -69,8 +69,6 @@ def Hbs(graph : dict ,root:str ,dict={})-> float:
 
 
 
-        # Calculate and return the Belief Strength (Hbs) of the argument.
-        return 1 / (1 + total_hbs)
     
 # print(Hbs(universe_graph,"i"))
 
