@@ -1,10 +1,21 @@
+# util.py
+"""
+This Python script contains utility methods for processing and analyzing debate data.
+
+Authors: Mohamed AZZAOUI, Nassim LATTAB
+Creation Date: 19/03/2024
+"""
+
+
 univers_graph={"i":["a","b","c"],"b":["e"],"a":["d"],"c":[],"e":[],"d":[]}
+
 opinion_graph={"i":[],"d":[]}
+
+arguments=["a","i","b","d"]
 
 def Att_Arg(OG,UG):
     
     liste_adjacence_att={}
-    print(UG)
     for key in OG.keys():
         liste_adjacence_att[key]=[]
         for key2,value2 in UG.items() :
@@ -13,23 +24,45 @@ def Att_Arg(OG,UG):
                 
     return liste_adjacence_att
 
-def Hbs(graph,root,dict={}):
+def Create_OG(arguments,UG):
     
-    if(root in dict.keys()): #dictionary who permit to not calculate again the same Hbs
+    OG = {}
+    
+    for i in arguments :
+        arg = []
+        for l in UG[i]:
+            if(l in arguments):
+                arg.append(l)
+        OG[i] = arg
+        
+    return OG
+
+def Hbs(graph : dict ,root:str ,dict={})-> float:
+    """ 
+    Calculates and returns the Belief Strength (Hbs) of an argument.
+
+    The Belief Strength (Hbs) of an argument is calculated as follows:
+    - If no other arguments attack the given argument, its Belief Strength (Hbs) is 1.
+    - Otherwise, the Belief Strength (Hbs) is calculated as 1 divided by the total_Hbs of the Belief Strengths (Hbs)
+      of all attacking arguments, plus 1.
+    """
+     
+    if(root in dict.keys()):
         return dict[root]
     
-    if((len(graph[root])) == 0): #if anybody attack the arguments the value is 1
-        dict[root] = 1
+    # If nobody attacks the argument, the value is of his Hbs 1.
+    if((len(graph[root])) == 0): 
         return 1
     
     else :
-        sum = 0                  #take all the arguments who attack root and do the sum of their hbs for calculate the hbs of root
+        # Sums the Belief Strengths (Hbs) of all attacking arguments.
+        total_Hbs = 0                 
         for i in range(len(graph[root])):
-            sum += Hbs(graph,(graph[root])[i],dict)
+            total_Hbs += Hbs(graph,(graph[root])[i],dict)
             
-        dict[root] = 1/(1+sum)
-        return 1/(1+sum)
+        dict[root] = 1/(1+total_Hbs)
+        # Calculate and return the Belief Strength (Hbs) of the argument.
+        return 1/(1+total_Hbs)
     
-print(Hbs(univers_graph,"i"))
 
-print(Att_Arg(opinion_graph,univers_graph))
+
