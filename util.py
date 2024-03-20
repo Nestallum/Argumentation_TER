@@ -1,21 +1,35 @@
-univers_graph={"i":["a","b","c"],"b":["e"],"a":["d"],"c":[],"e":[],"d":[]}
+# util.py
 
+"""
+This Python script contains utility methods for processing and analyzing debate data.
 
-def Hbs(graph,root,dict={}):
+Authors: Mohamed AZZAOUI, Nassim LATTAB
+Creation Date: 19/03/2024
+"""
+
+universe_graph={"i":["a","b","c"],"b":["e"],"a":["d"],"c":[],"e":[],"d":[]}
     
-    if(root in dict.keys()): #dictionary who permit to not calculate again the same Hbs
-        return dict[root]
+def Hbs(graph: dict, argument: str) -> float:
+    """ 
+    Calculates and returns the Belief Strength (Hbs) of an argument.
+
+    The Belief Strength (Hbs) of an argument is calculated as follows:
+    - If no other arguments attack the given argument, its Belief Strength (Hbs) is 1.
+    - Otherwise, the Belief Strength (Hbs) is calculated as 1 divided by the sum of the Belief Strengths (Hbs)
+      of all attacking arguments, plus 1.
+    """
     
-    if((len(graph[root])) == 0): #if anybody attack the arguments the value is 1
-        dict[root] = 1
+    # If nobody attacks the argument, the value is of his Hbs 1.
+    if len(graph[argument]) == 0: 
         return 1
     
-    else :
-        sum = 0                  #take all the arguments who attack root and do the sum of their hbs for calculate the hbs of root
-        for i in range(len(graph[root])):
-            sum += Hbs(graph,(graph[root])[i],dict)
+    else:
+        # Sum the Belief Strengths (Hbs) of all attacking arguments.
+        total_hbs = 0                  
+        for i in range(len(graph[argument])):
+            total_hbs += Hbs(graph, graph[argument][i])
             
-        dict[root] = 1/(1+sum)
-        return 1/(1+sum)
+        # Calculate and return the Belief Strength (Hbs) of the argument.
+        return 1 / (1 + total_hbs)
     
-print(Hbs(univers_graph,"i"))
+# print(Hbs(universe_graph,"i"))
