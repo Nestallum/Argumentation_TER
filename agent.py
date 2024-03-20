@@ -4,19 +4,37 @@ UG={"i":["a","b","c"],"b":["e"],"a":["d"],"c":[],"e":[],"d":[]}
 OG=Create_OG(["i","a","b","c"],UG)
 PG={'i': ['a', 'b'], 'a': [], 'b': []}
 
+# represente la class agent 
 class agent :
-
-   def __init__(self,OG,UG,cl=0.1):
+   # initialise l'agent
+   def __init__(self,i,OG,UG,cl=0.1):
        
+       self.name=f"agent {i}"
        self.OG = OG
        self.Vk = Hbs(OG,"i")
        self.cl = cl
        self.lat = Att_Arg(OG,UG)
-          
+       
+   # renvoie le hbs de l'agent   
    def get_Vk(self):
        
        return self.Vk
+   # dis si l'agent est dans sa zone de confort ou pas
+   def in_confort_zone(self,PG,UG):
+       
+       low_borne=self.Vk-self.cl
+       high_borne=self.Vk+self.cl
+       actual_value=Hbs(PG,"i")
+       
+       if(actual_value >= low_borne and actual_value <= high_borne):
+           
+           print(f"{self.name} est dans ça zone de confort")
+           return True
+       
+       print(f"{self.name} est pas dans ça zone de confort")
+       return False
    
+   # renvoie tout les coups qui attaque un argument du graphe public
    def next_move_possibility(self,PG):
        
        possibility_of_play = []
@@ -31,24 +49,26 @@ class agent :
        
        return possibility_of_play
    
+   # les coups qui rapprochent le plus possible l'agent de sa zone de confort 
    def best_next_move(self,PG,UG):
+       
        low_borne=self.Vk-self.cl
        high_borne=self.Vk+self.cl
        actual_value=Hbs(PG,"i")
-       
-       if(actual_value >= low_borne and actual_value <= low_borne):
+       #l'agent est deja dans al zone de confort donc il ne joue pas
+       if(actual_value >= low_borne and actual_value <= high_borne):
            
-           print("deja dans la zone de confort")
+           print("\n deja dans la zone de confort")
            return PG
        
        possibility_of_play=self.next_move_possibility(PG)
        best_arg = []
        best_value = min(abs(actual_value-low_borne),abs(actual_value-high_borne))
        print(best_value)
-       
+       #il n'a aucun coup disponible 
        if(len(possibility_of_play)==0):
            
-           print("aucun coup n'est jouable")
+           print("\n aucun coup n'est jouable donc aucun ajout")
            return PG
        
        for i in possibility_of_play :
@@ -61,20 +81,21 @@ class agent :
            if(value <= best_value):
                best_arg.append(i)
                best_value=value
-               
+       
+       # aucun arguments le rapproche de sa zone de confort
        if(len(best_arg) == 0):
            
-           print(" aucun arguments est assez bon ")
+           print("\naucun arguments est assez bon donc aucun ajout ")
            return PG
        
        arguments=[keys for keys in PG]
-       
+       #il joue un arguments qui le rapproche de sa zone de confort  
        arguments.append(best_arg[0])
        print(arguments)
-       print(f"on rajoute l'argument {best_arg[0]}")
+       print(f"\n {self.name}  rajoute l'argument {best_arg[0]} au public graph ")
        
        return Create_OG(arguments,UG)
    
 
    
-print(agent(OG,UG).best_next_move(PG,UG))
+print(agent(1,OG,UG).best_next_move(PG,UG))
