@@ -1,7 +1,7 @@
 from util import *
 
 UG={"i":["a","b","c"],"b":["e"],"a":["d"],"c":[],"e":[],"d":[]}
-OG=Create_OG(["i","a","b","c"],UG)
+OG=generate_OG(["i","a","b","c"],UG)
 PG={'i': ['a', 'b'], 'a': [], 'b': []}
 
 # represente la class agent 
@@ -13,7 +13,7 @@ class agent :
        self.OG = OG
        self.Vk = Hbs(OG,"i")
        self.cl = cl
-       self.lat = Att_Arg(OG,UG)
+       self.lat = build_attackers_adjacency_list(OG,UG)
        
    # renvoie le hbs de l'agent   
    def get_Vk(self):
@@ -76,7 +76,7 @@ class agent :
            print(i)
            arguments = [keys for keys in PG]
            arguments.append(i)
-           PG1 = Create_OG(arguments,UG)
+           PG1 = generate_OG(arguments,UG)
            value = Hbs(PG1,"i")
            value = min(abs(low_borne-value),abs(high_borne-value))
            if(value <= best_value):
@@ -97,7 +97,7 @@ class agent :
        
        print(f"\n {self.name}  rajoute l'argument {best_arg[0]} au public graph ")
        
-       return Create_OG(arguments,UG)
+       return generate_OG(arguments,UG)
    
 
  
