@@ -38,6 +38,8 @@ def Create_OG(arguments,UG):
     return OG
 
 def Hbs(graph : dict ,root:str ,dict={})-> float:
+
+
     """ 
     Calculates and returns the Belief Strength (Hbs) of an argument.
 
@@ -65,4 +67,10 @@ def Hbs(graph : dict ,root:str ,dict={})-> float:
         return 1/(1+total_Hbs)
     
 
+
+
+        # Calculate and return the Belief Strength (Hbs) of the argument.
+        return 1 / (1 + total_hbs)
+    
+# print(Hbs(universe_graph,"i"))
 
