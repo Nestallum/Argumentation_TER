@@ -37,7 +37,7 @@ def Create_OG(arguments,UG):
         
     return OG
 
-def Hbs(graph : dict ,root : str )-> float:
+def Hbs(graph : dict ,root : str)-> float:
 
     """ 
     Calculates and returns the Belief Strength (Hbs) of an argument.
@@ -54,7 +54,7 @@ def Hbs(graph : dict ,root : str )-> float:
         # Sums the Belief Strengths (Hbs) of all attacking arguments.
         total_Hbs = 0         
         for i in graph[root]:
-            total_Hbs += Hbs(graph,i,dict)
+            total_Hbs += Hbs(graph,i)
         # Calculate and return the Belief Strength (Hbs) of the argument.
         return 1/(1+total_Hbs)
     

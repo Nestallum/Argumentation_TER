@@ -7,7 +7,7 @@ PG={'i': ['a', 'b'], 'a': [], 'b': []}
 # represente la class agent 
 class agent :
    # initialise l'agent
-   def __init__(self,i,OG,UG,cl=0.1):
+   def __init__(self,i,OG,UG,cl=0.05):
        
        self.name=f"agent {i}"
        self.OG = OG
