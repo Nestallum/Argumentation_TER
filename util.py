@@ -58,7 +58,6 @@ def generate_OG(UG: dict, arguments: list) -> dict:
 
     return OG
 
-
 import random
 def auto_generate_OG(UG: dict) -> dict:
     """
@@ -114,6 +113,6 @@ def Hbs(graph: dict, argument: str) -> float:
         # Calculate and return the Belief Strength (Hbs) of the argument.
         return 1 / (1 + total_hbs)
 
-print(universe_graph)
-print(opinion_graph)
-print(build_attackers_adjacency_list(opinion_graph, universe_graph))
+    #print(universe_graph)
+    #print(auto_generate_OG(universe_graph))
+    #print(build_attackers_adjacency_list(opinion_graph, universe_graph))
