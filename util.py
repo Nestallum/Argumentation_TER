@@ -58,11 +58,6 @@ def generate_OG(UG: dict, arguments: list) -> dict:
 
     return OG
 
-<<<<<<< HEAD
-=======
-def Hbs(graph : dict ,root : str)-> float:
->>>>>>> Mohamed
-
 import random
 def auto_generate_OG(UG: dict) -> dict:
     """
@@ -108,7 +103,6 @@ def Hbs(graph: dict, argument: str) -> float:
     # If nobody attacks the argument, the value is of its Hbs is 1.
     if len(graph[argument]) == 0: 
         return 1
-<<<<<<< HEAD
     
     else:
         # Sum the Belief Strengths (Hbs) of all attacking arguments.
@@ -116,13 +110,6 @@ def Hbs(graph: dict, argument: str) -> float:
         for i in range(len(graph[argument])):
             total_hbs += Hbs(graph, graph[argument][i])
             
-=======
-    else :
-        # Sums the Belief Strengths (Hbs) of all attacking arguments.
-        total_Hbs = 0         
-        for i in graph[root]:
-            total_Hbs += Hbs(graph,i)
->>>>>>> Mohamed
         # Calculate and return the Belief Strength (Hbs) of the argument.
         return 1 / (1 + total_hbs)
 

@@ -9,7 +9,7 @@ def auto_generated_game(UG,number_of_agent):
     before_PG = {}
     
     for i in range(number_of_agent):
-        agents.append(agent(i,Create_UG_subgraph(UG),UG))
+        agents.append(agent(i,auto_generate_OG(UG),UG))
         
     nb_turn=0 
     while(PG != before_PG):
@@ -32,3 +32,6 @@ def self_generated_game(UG,agents):
         for i in range(len(agents)):
             print(f"\n tour de l'agent {agents[i].name}")
             PG=agents[i].best_next_move(PG,UG)
+
+UG={"i":["a","b","c"],"b":["e"],"a":["d"],"c":[],"e":[],"d":[]}
+auto_generated_game(UG,4)
