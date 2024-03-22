@@ -1,6 +1,6 @@
 # IAD 5 : Étude expérimentale concernant l’impact de l’ordre des agents dans les protocoles d’argumentation.
 
-**Encadré par** : Elise BONZON, elise.bonzon@u-paris.fr ; Jérôme DELOBELLE, jerome.delobelle@u-paris.fr
+**Encadré par :** Elise BONZON, elise.bonzon@u-paris.fr ; Jérôme DELOBELLE, jerome.delobelle@u-paris.fr
               
 Parmi les méthodes de modélisation de l’argumentation existantes, les protocoles d’argumentation permettent à des agents d’échanger des arguments afin de fournir une évaluation collective de la valeur d’un argument donné (i.e. une question ou une issue). 
 L’idée globale est que les agents participant au débat ne rendent pas de compte à une autorité centrale de l’ensemble de leur système d’argumentation, mais contribuent plutôt au débat étape par étape, 
@@ -22,7 +22,7 @@ Online. Auckland (virtual), New Zealand, May 2022.**
 ##
 
 # DAI (Distributed Artificial Intelligence) 5 : Experimental Study on the Impact of Agent Order in Argumentation Protocols.
-**Supervised by:** Elise BONZON, elise.bonzon@u-paris.fr; Jérôme DELOBELLE, jerome.delobelle@u-paris.fr
+**Supervised by :** Elise BONZON, elise.bonzon@u-paris.fr; Jérôme DELOBELLE, jerome.delobelle@u-paris.fr
 
 Among the existing methods for modeling argumentation, argumentation protocols enable agents to exchange arguments to provide a collective evaluation of the value of a given argument (i.e., a question or an issue).
 The general idea is that agents participating in the debate do not answer to a central authority for their entire argumentation system, but rather contribute to the debate step by step, guided by their individual assessment of the current state of the discussion, and without coordination with other agents (similarly to online debates).
