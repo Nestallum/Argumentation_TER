@@ -1,4 +1,4 @@
-# IAD 5 : Etude expérimentale concernant l’impact de l’ordre des agents dans les protocoles d’argumentation
+# IAD 5 : Étude expérimentale concernant l’impact de l’ordre des agents dans les protocoles d’argumentation
 
 **Encadré par** : Elise BONZON, elise.bonzon@u-paris.fr ; Jérôme DELOBELLE, jerome.delobelle@u-paris.fr
               
