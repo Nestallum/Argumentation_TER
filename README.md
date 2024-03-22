@@ -1,4 +1,4 @@
-# IAD 5 : Étude expérimentale concernant l’impact de l’ordre des agents dans les protocoles d’argumentation
+# IAD 5 : Étude expérimentale concernant l’impact de l’ordre des agents dans les protocoles d’argumentation.
 
 **Encadré par** : Elise BONZON, elise.bonzon@u-paris.fr ; Jérôme DELOBELLE, jerome.delobelle@u-paris.fr
               
@@ -21,7 +21,7 @@ Online. Auckland (virtual), New Zealand, May 2022.**
 
 ##
 
-# DAI (Distributed Artificial Intelligence) 5 : Experimental Study on the Impact of Agent Order in Argumentation Protocols
+# DAI (Distributed Artificial Intelligence) 5 : Experimental Study on the Impact of Agent Order in Argumentation Protocols.
 **Supervised by:** Elise BONZON, elise.bonzon@u-paris.fr; Jérôme DELOBELLE, jerome.delobelle@u-paris.fr
 
 Among the existing methods for modeling argumentation, argumentation protocols enable agents to exchange arguments to provide a collective evaluation of the value of a given argument (i.e., a question or an issue).
