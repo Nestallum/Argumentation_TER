@@ -11,7 +11,7 @@ import os, sys, argparse, re
 
 def get_command_args() -> str:
     """ 
-    Returns the .apx file provided.
+    Returns the .apx file provided in the command line.
     """
     
     # Add a description to our script.
@@ -36,8 +36,15 @@ def get_command_args() -> str:
 def read_UG_from_file(file_name: str) -> dict:
     """
     Returns the Universe Graph (UG) read from the specified file as a dictionary.
-    Key : attacked argument, Value : list of attacking arguments (may be empty).
+
+    Args:
+        file_name (str): The name of the file containing the Universe Graph.
+
+    Returns:
+        dict: The Universe Graph (UG) represented as a dictionary.
+        Key : attacked argument, Value : list of attacking arguments (may be empty).
     """
+
     if not os.path.exists(file_name):
         print(f"The file {file_name} does not exist.")
         sys.exit(1)
