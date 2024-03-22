@@ -1,105 +1,227 @@
+# agent.py
+
+"""
+This Python script contains a class representing an agent in an argumentation context, along with utility methods for processing and analyzing debate data.
+
+Authors: Mohamed AZZAOUI, Nassim LATTAB
+Creation Date: 20/03/2024
+"""
+
 from util import *
 
-UG={"i":["a","b","c"],"b":["e"],"a":["d"],"c":[],"e":[],"d":[]}
-OG=generate_OG(UG,["i","a","b","c"])
-PG={'i': ['a', 'b'], 'a': [], 'b': []}
+UG = {"i":["a","b","c"],"b":["e"],"a":["d"],"c":[],"e":[],"d":[]}
+OG = generate_subgraph(UG,["i","a","b","c"])
+PG = {'i': ['a', 'b'], 'a': [], 'b': []}
 
-# represente la class agent 
+# Represents the agent class.
 class agent :
-   # initialise l'agent
-   def __init__(self,i,OG,UG,cl=0.05):
-       
-       self.name=f"agent {i}"
-       self.OG = OG
-       self.Vk = Hbs(OG,"i")
-       self.cl = cl
-       self.lat = build_attackers_adjacency_list(OG,UG)
-       
-   # renvoie le hbs de l'agent   
-   def get_Vk(self):
-       
-       return self.Vk
-   # dis si l'agent est dans sa zone de confort ou pas
-   def in_confort_zone(self,PG,UG):
-       
-       low_borne=self.Vk-self.cl
-       high_borne=self.Vk+self.cl
-       actual_value=Hbs(PG,"i")
-       
-       if(actual_value >= low_borne and actual_value <= high_borne):
-           
-           print(f"{self.name} est dans ça zone de confort")
-           return True
-       
-       print(f"{self.name} n'est pas dans ça zone de confort")
-       return False
    
-   # renvoie tout les coups qui attaque un argument du graphe public
-   def next_move_possibility(self,PG):
-       
-       possibility_of_play = []
-       
-       for keys in PG :
-           for keys2,value2 in self.lat.items():
-               if(keys in value2) :
-                   if(keys2 not in PG.keys()):
-                        possibility_of_play.append(keys2)
-                   
-       
-       
-       return possibility_of_play
-   
-   # les coups qui rapprochent le plus possible l'agent de sa zone de confort 
-   def best_next_move(self,PG,UG):
-       print(f"\nvaleur actuelle du OG {self.Vk}")
-       low_borne=self.Vk-self.cl
-       high_borne=self.Vk+self.cl
-       actual_value=Hbs(PG,"i")
-       print(f"valeur actuelle du PG {actual_value}")
-       #l'agent est deja dans al zone de confort donc il ne joue pas
-       if(actual_value >= low_borne and actual_value <= high_borne):
-           
-           print("deja dans la zone de confort")
-           return PG
-       
-       possibility_of_play=self.next_move_possibility(PG)
-       best_arg = []
-       best_value = min(abs(actual_value-low_borne),abs(actual_value-high_borne))
-       #il n'a aucun coup disponible 
-       if(len(possibility_of_play)==0):
-           
-           print("aucun coup n'est jouable donc aucun ajout")
-           return PG
-       
-       for i in possibility_of_play :
-           arguments = [keys for keys in PG]
-           arguments.append(i)
-           PG1 = generate_OG(UG,arguments)
-           value = Hbs(PG1,"i")
-           value = min(abs(low_borne-value),abs(high_borne-value))
-           if(value <= best_value):
-               best_arg.append(i)
-               best_value=value
-       
-       # aucun arguments le rapproche de sa zone de confort
-       if(len(best_arg) == 0):
-           
-           print("aucun arguments est assez bon donc aucun ajout ")
-           return PG
-       
-       
-       arguments=[keys for keys in PG]
-       #il joue un arguments qui le rapproche de sa zone de confort  
-       arguments.append(best_arg[0])
-       
-       print(f"\ntout les coups jouable ce tours ci {best_arg}")
-       print(f"{self.name}  rajoute l'argument {best_arg[0]} au public graph ")
-       value=Hbs(generate_OG(UG,arguments),"i")
-       print(f"hbs public graph maintenant :{value}")
-       
-       return generate_OG(UG,arguments)
-   
+    def __init__(self, i, OG, UG, cl=0.05):
+        """
+        Initializes the agent with its properties.
 
+        Args:
+            i (int): The identifier of the agent.
+            OG (dict): The opinion graph representing the agent's knowledge.
+            UG (dict): The universe graph representing the entire argumentation framework.
+            cl (float): The comfort level of the agent (default is 0.05).
+        """
+       
+        self.name=f"agent {i}"
+        self.OG = OG
+        self.Vk = Hbs(OG, "i") # Value of the agent’s opinion (value of the issue in the agent’s sub-graph).
+        self.cl = cl
+        self.attackers_adjacency_list = build_attackers_adjacency_list(OG, UG) # List of attackers.
+        
+    def get_Vk(self) -> float:
+        """
+            Returns the Belief Strength (Hbs) of the agent's knowledge.
+
+            Returns:
+                float: The Belief Strength (Hbs) of the agent.
+            """
+            
+        return self.Vk
+    
+    def in_comfort_zone(self, PG) -> bool:
+        """ Checks if the agent is in its comfort zone.
+
+        Args:
+            PG (dict): The public graph representing the current state of the debate.
+            UG (dict): The universe graph representing the entire argumentation framework.
+
+        Returns:
+            bool: True if the agent is in its comfort zone, False otherwise.
+        """
+
+        # Boundaries around ideal value Vk.
+        low_borne = self.Vk - self.cl
+        high_borne = self.Vk + self.cl
+
+        # Vp the actual value of the issue of the public debate graph.
+        Vp = Hbs(PG, "i")
+       
+        if(Vp >= low_borne and Vp <= high_borne):
+            return True
+        
+        return False
+   
+    def get_possible_next_moves(self, PG) -> list:
+        """
+        Returns all the possible moves that can be played by the agent.
+
+        Args:
+            PG (dict): The public graph representing the current state of the debate.
+
+        Returns:
+            list: A list of arguments that can be added to the public graph.
+        """
+        
+        possible_moves = []
+       
+        for pg_arg in PG:
+            for og_attacker, og_attacked in self.attackers_adjacency_list.items():
+                # If an argument in the public graph (PG) is attacked and the attacker is not in PG, then we can add it.
+                if(pg_arg in og_attacked and og_attacker not in PG.keys()):
+                    possible_moves.append(og_attacker)        
+        
+        return possible_moves
+   
+    def best_next_move(self, PG, UG) -> dict:
+        """
+        Determines the best move for the agent to make towards its comfort zone.
+
+        Args:
+            PG (dict): The public graph representing the current state of the debate.
+            UG (dict): The universe graph representing the entire argumentation framework.
+
+        Returns:
+            dict: The updated public graph after making the best move.
+        """
+
+        print(f"\nCurrent value of OG: {self.Vk}")
+
+        Vp = Hbs(PG, "i")
+        print(f"Current value of PG: {Vp}")
+        
+        # Already in comfort zone, plays nothing.
+        if(self.in_comfort_zone(PG)):
+            print(f"{self.name} is in its comfort zone. No need to play an argument.")
+            return PG
+        
+        # Else, find the best argument to play.
+        print(f"{self.name} is not in its comfort zone.")
+
+        possible_moves = self.get_possible_next_moves(PG)
+        best_args = []
+        low_borne = self.Vk - self.cl
+        high_borne = self.Vk + self.cl
+        best_value = min(abs(Vp-low_borne), abs(Vp-high_borne))
+
+        # If there is no argument to play.
+        if(len(possible_moves) == 0):
+            print("No playable moves, no addition.")
+            return PG
+        
+        # Else.
+        for move in possible_moves :
+            arguments = [keys for keys in PG]
+            # Generate temporal PG to test its new value adding a new move.
+            arguments.append(move)
+            temp_PG = generate_subgraph(UG, arguments)
+            temp_Vp = Hbs(temp_PG, "i")
+            temp_value = min(abs(low_borne - temp_Vp), abs(high_borne - temp_Vp))
+
+            # Updating the best value
+            if(temp_value <= best_value):
+                best_args.append(move)
+                best_value = temp_value
+        
+        # If no argument brings him closer to his comfort zone.
+        if(len(best_args) == 0):
+            print("No good arguments, no addition.")
+            return PG
+        
+        # Else, plays one of the goods arguments.
+        arguments = [keys for keys in PG]
+        arg_to_play = random.choice(best_args)
+        arguments.append(arg_to_play)
+        
+        # Final prints
+        print(f"\nAll playable moves this turn: {best_args}")
+        print(f"{self.name} adds argument {arg_to_play} to the public graph.")
+        new_Vp = Hbs(generate_subgraph(UG, arguments), "i")
+        print(f"Vp of public graph now: {new_Vp}")
+        
+        # Generate new PG
+        return generate_subgraph(UG, arguments)
  
 #print(Hbs(PG,"i")) 
 #print(Hbs(OG,"i")) 
+
+# -----------------------------------------------------------------------------------------------
+    # Nassim - best_next_move2 inspirée de la 1ere version mais avec quelques modifications
+    def best_next_move2(self, PG, UG) -> dict:
+            """
+            Determines the best move for the agent to make towards its comfort zone.
+
+            Args:
+                PG (dict): The public graph representing the current state of the debate.
+                UG (dict): The universe graph representing the entire argumentation framework.
+
+            Returns:
+                dict: The updated public graph after making the best move.
+            """
+
+            print(f"\nCurrent value of OG: {self.get_Vk()}")
+
+            Vp = Hbs(PG, "i")
+            print(f"Current value of PG: {Vp}")
+            
+            # Already in comfort zone, plays nothing.
+            if(self.in_comfort_zone(PG)):
+                print(f"{self.name} is in its comfort zone. No need to play an argument.")
+                return PG
+            
+            # Else, find the best argument to play.
+            print(f"{self.name} is not in its comfort zone.")
+
+            possible_moves = self.get_possible_next_moves(PG)
+
+            # If there is no argument to play.
+            if(len(possible_moves) == 0):
+                print("No playable moves, no addition.")
+                return PG
+            
+            # Else, find the best argument to play.
+            arg_to_play = None
+            gap_to_minimize = abs(Vp - self.get_Vk())
+            for move in possible_moves :
+                arguments = [keys for keys in PG]
+                # Generate temporal PG to test its new value adding a new move.
+                arguments.append(move)
+                temp_PG = generate_subgraph(UG, arguments)
+                temp_Vp = Hbs(temp_PG, "i")
+                temp_gap = abs(temp_Vp - self.get_Vk())
+
+                # Updating the best value
+                if(temp_gap < gap_to_minimize):
+                    arg_to_play = move
+                    gap_to_minimize = temp_gap
+            
+            # If no argument brings him closer to his comfort zone.
+            if(arg_to_play == None):
+                print("No good arguments, no addition.")
+                return PG
+            
+            # Else, plays one of the goods arguments.
+            arguments = [keys for keys in PG]
+            arguments.append(arg_to_play)
+            
+            # Final prints
+            print(f"{self.name} adds argument {arg_to_play} to the public graph.")
+            new_Vp = Hbs(generate_subgraph(UG, arguments), "i")
+            print(f"Vp of public graph now: {new_Vp}")
+            
+            # Generate new PG
+            return generate_subgraph(UG, arguments)

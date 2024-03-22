@@ -11,7 +11,7 @@ universe_graph={"i":["a","b","c"],"b":["e"],"a":["d"],"c":[],"e":[],"d":[]}
 opinion_graph={"i":["d"],"d":[]}
 arguments=["a","i","b","d"]
 
-def build_attackers_adjacency_list(OG,UG):
+def build_attackers_adjacency_list(OG, UG) -> dict:
     """
     Builds and returns the adjacency list of attackers for arguments in OG based on UG.
 
@@ -34,8 +34,7 @@ def build_attackers_adjacency_list(OG,UG):
                 
     return attackers_adjacency_list
 
-
-def generate_OG(UG: dict, arguments: list) -> dict:
+def generate_subgraph(UG: dict, arguments: list) -> dict:
     """
     Generates a subgraph (opinion graph OG) from the given universe graph (UG)
     composed of the specified list of arguments.
@@ -85,8 +84,7 @@ def auto_generate_OG(UG: dict) -> dict:
     # Once we have our random args, add the issue arg.
     selected_args.append('i') 
 
-    return generate_OG(UG, selected_args)
-
+    return generate_subgraph(UG, selected_args)
 
 def Hbs(graph: dict, argument: str) -> float:
     """ 
