@@ -19,6 +19,8 @@ En effet, l’objectif est de montrer et mesurer via une étude expérimentale, 
 (AAMAS 2022). Ed. by Piotr Faliszewski, Viviana Mascardi, Catherine Pelachaud, and Matthew E. Taylor.
 Online. Auckland (virtual), New Zealand, May 2022.**
 
+##
+
 # DAI (Distributed Artificial Intelligence) 5 : Experimental Study on the Impact of Agent Order in Argumentation Protocols
 **Supervised by:** Elise BONZON, elise.bonzon@u-paris.fr; Jérôme DELOBELLE, jerome.delobelle@u-paris.fr
 
