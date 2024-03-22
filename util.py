@@ -105,8 +105,8 @@ def Hbs(graph: dict, argument: str) -> float:
     else:
         # Sum the Belief Strengths (Hbs) of all attacking arguments.
         total_hbs = 0                  
-        for i in range(len(graph[argument])):
-            total_hbs += Hbs(graph, graph[argument][i])
+        for a in range(len(graph[argument])):
+            total_hbs += Hbs(graph, graph[argument][a])
             
         # Calculate and return the Belief Strength (Hbs) of the argument.
         return 1 / (1 + total_hbs)

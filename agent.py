@@ -99,7 +99,7 @@ class agent :
             dict: The updated public graph after making the best move.
         """
 
-        print(f"\nCurrent value of OG: {self.Vk}")
+        print(f"\nCurrent value of OG: {self.get_Vk()}")
 
         Vp = Hbs(PG, "i")
         print(f"Current value of PG: {Vp}")
@@ -113,115 +113,46 @@ class agent :
         print(f"{self.name} is not in its comfort zone.")
 
         possible_moves = self.get_possible_next_moves(PG)
-        best_args = []
-        low_borne = self.Vk - self.cl
-        high_borne = self.Vk + self.cl
-        best_value = min(abs(Vp-low_borne), abs(Vp-high_borne))
 
         # If there is no argument to play.
         if(len(possible_moves) == 0):
             print("No playable moves, no addition.")
             return PG
         
-        # Else.
+        # Else, find the best argument to play.
+        arg_to_play = None
+        gap_to_minimize = abs(Vp - self.get_Vk())
         for move in possible_moves :
             arguments = [keys for keys in PG]
             # Generate temporal PG to test its new value adding a new move.
             arguments.append(move)
             temp_PG = generate_subgraph(UG, arguments)
             temp_Vp = Hbs(temp_PG, "i")
-            temp_value = min(abs(low_borne - temp_Vp), abs(high_borne - temp_Vp))
+            temp_gap = abs(temp_Vp - self.get_Vk())
 
             # Updating the best value
-            if(temp_value <= best_value):
-                best_args.append(move)
-                best_value = temp_value
+            if(temp_gap < gap_to_minimize):
+                arg_to_play = move
+                gap_to_minimize = temp_gap
         
         # If no argument brings him closer to his comfort zone.
-        if(len(best_args) == 0):
+        if(arg_to_play == None):
             print("No good arguments, no addition.")
             return PG
         
         # Else, plays one of the goods arguments.
         arguments = [keys for keys in PG]
-        arg_to_play = random.choice(best_args)
         arguments.append(arg_to_play)
         
         # Final prints
-        print(f"\nAll playable moves this turn: {best_args}")
         print(f"{self.name} adds argument {arg_to_play} to the public graph.")
-        new_Vp = Hbs(generate_subgraph(UG, arguments), "i")
+        new_PG = generate_subgraph(UG, arguments)
+        new_Vp = Hbs(new_PG, "i")
         print(f"Vp of public graph now: {new_Vp}")
         
         # Generate new PG
-        return generate_subgraph(UG, arguments)
+        return new_PG
+
  
 #print(Hbs(PG,"i")) 
 #print(Hbs(OG,"i")) 
-
-# -----------------------------------------------------------------------------------------------
-    # Nassim - best_next_move2 inspirée de la 1ere version mais avec quelques modifications
-    def best_next_move2(self, PG, UG) -> dict:
-            """
-            Determines the best move for the agent to make towards its comfort zone.
-
-            Args:
-                PG (dict): The public graph representing the current state of the debate.
-                UG (dict): The universe graph representing the entire argumentation framework.
-
-            Returns:
-                dict: The updated public graph after making the best move.
-            """
-
-            print(f"\nCurrent value of OG: {self.get_Vk()}")
-
-            Vp = Hbs(PG, "i")
-            print(f"Current value of PG: {Vp}")
-            
-            # Already in comfort zone, plays nothing.
-            if(self.in_comfort_zone(PG)):
-                print(f"{self.name} is in its comfort zone. No need to play an argument.")
-                return PG
-            
-            # Else, find the best argument to play.
-            print(f"{self.name} is not in its comfort zone.")
-
-            possible_moves = self.get_possible_next_moves(PG)
-
-            # If there is no argument to play.
-            if(len(possible_moves) == 0):
-                print("No playable moves, no addition.")
-                return PG
-            
-            # Else, find the best argument to play.
-            arg_to_play = None
-            gap_to_minimize = abs(Vp - self.get_Vk())
-            for move in possible_moves :
-                arguments = [keys for keys in PG]
-                # Generate temporal PG to test its new value adding a new move.
-                arguments.append(move)
-                temp_PG = generate_subgraph(UG, arguments)
-                temp_Vp = Hbs(temp_PG, "i")
-                temp_gap = abs(temp_Vp - self.get_Vk())
-
-                # Updating the best value
-                if(temp_gap < gap_to_minimize):
-                    arg_to_play = move
-                    gap_to_minimize = temp_gap
-            
-            # If no argument brings him closer to his comfort zone.
-            if(arg_to_play == None):
-                print("No good arguments, no addition.")
-                return PG
-            
-            # Else, plays one of the goods arguments.
-            arguments = [keys for keys in PG]
-            arguments.append(arg_to_play)
-            
-            # Final prints
-            print(f"{self.name} adds argument {arg_to_play} to the public graph.")
-            new_Vp = Hbs(generate_subgraph(UG, arguments), "i")
-            print(f"Vp of public graph now: {new_Vp}")
-            
-            # Generate new PG
-            return generate_subgraph(UG, arguments)
