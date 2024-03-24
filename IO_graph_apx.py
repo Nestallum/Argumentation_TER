@@ -68,3 +68,37 @@ def read_UG_from_file(file_name: str) -> dict:
                 graph[attacked].append(attacker)
                 
     return graph
+
+def write_apx_from_graph(folder_name: str, file_name: str, graph: dict) -> None:
+    """
+    Writes the Graph to a file in the specified folder with the given file name.
+
+    Args:
+        folder_name (str): The name of the folder where the file will be saved.
+        file_name (str): The name of the file to write the Graph to.
+        graph (dict): The Graph represented as a dictionary.
+                      Key: attacked argument, Value: list of attacking arguments (may be empty).
+
+    Returns:
+        None.
+    """
+
+    extension = ".apx"
+    path = folder_name + "/" + file_name + extension
+
+    if not os.path.exists(folder_name+"/"):
+        os.mkdir(folder_name)
+
+    if os.path.exists(path):
+        print(f"The file {file_name}{extension} already exists.")
+        sys.exit(1)
+
+    with open(path, 'w') as file:
+        # Write arguments.
+        args = graph.keys()
+        for arg in args:
+            file.write(f"arg({arg}).\n")
+        # Fill with attack relations
+        for key, value in graph.items():
+            for arg in value:
+                file.write(f"att({arg},{key}).\n")
