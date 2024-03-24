@@ -57,12 +57,12 @@ def read_UG_from_file(file_name: str) -> dict:
             # Get the line content
             content = line[line.find("(")+1 : line.find(")")]
 
-            # Add arguments to the dict as attacked args
+            # Add arguments to the dict as attacked args.
             if line.startswith("arg"):
                 argument = content
                 graph[argument] = list()
 
-            # For each attacker, add it to the list of attacking args
+            # For each attacker, add it to the list of attacking args.
             elif line.startswith("att"):
                 attacker, attacked = content.split(',')[0], content.split(',')[1]                
                 graph[attacked].append(attacker)
@@ -98,7 +98,8 @@ def write_apx_from_graph(folder_name: str, file_name: str, graph: dict) -> None:
         args = graph.keys()
         for arg in args:
             file.write(f"arg({arg}).\n")
-        # Fill with attack relations
+
+        # Fill with attack relations.
         for key, value in graph.items():
             for arg in value:
                 file.write(f"att({arg},{key}).\n")
