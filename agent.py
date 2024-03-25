@@ -9,10 +9,6 @@ Creation Date: 20/03/2024
 
 from util import *
 
-UG = {"i":["a","b","c"],"b":["e"],"a":["d"],"c":[],"e":[],"d":[]}
-OG = generate_subgraph(UG,["i","a","b","c"])
-PG = {'i': ['a', 'b'], 'a': [], 'b': []}
-
 # Represents the agent class.
 class agent :
    
@@ -29,7 +25,7 @@ class agent :
        
         self.name=f"agent {i}"
         self.OG = OG
-        self.Vk = Hbs(OG, "i") # Value of the agent’s opinion (value of the issue in the agent’s sub-graph).
+        self.Vk = Hbs(OG, "0") # Value of the agent’s opinion (value of the issue in the agent’s sub-graph).
         self.cl = cl
         self.attackers_adjacency_list = build_attackers_adjacency_list(OG, UG) # List of attackers.
         
@@ -59,7 +55,7 @@ class agent :
         high_borne = self.Vk + self.cl
 
         # Vp the actual value of the issue of the public debate graph.
-        Vp = Hbs(PG, "i")
+        Vp = Hbs(PG, "0")
        
         if(Vp >= low_borne and Vp <= high_borne):
             return True
@@ -101,7 +97,7 @@ class agent :
 
         print(f"\nCurrent value of OG: {self.get_Vk()}")
 
-        Vp = Hbs(PG, "i")
+        Vp = Hbs(PG, "0")
         print(f"Current value of PG: {Vp}")
         
         # Already in comfort zone, plays nothing.
@@ -127,7 +123,7 @@ class agent :
             # Generate temporal PG to test its new value adding a new move.
             arguments.append(move)
             temp_PG = generate_subgraph(UG, arguments)
-            temp_Vp = Hbs(temp_PG, "i")
+            temp_Vp = Hbs(temp_PG, "0")
             temp_gap = abs(temp_Vp - self.get_Vk())
 
             # Updating the best value
@@ -147,14 +143,8 @@ class agent :
         # Final prints
         print(f"{self.name} adds argument {arg_to_play} to the public graph.")
         new_PG = generate_subgraph(UG, arguments)
-        new_Vp = Hbs(new_PG, "i")
+        new_Vp = Hbs(new_PG, "0")
         print(f"Vp of public graph now: {new_Vp}")
         
         # Generate new PG
         return new_PG
-
- 
-
-
-#print(Hbs(PG,"i")) 
-#print(Hbs(OG,"i")) 
