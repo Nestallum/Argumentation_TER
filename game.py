@@ -84,5 +84,5 @@ def find_all_combinations(agents) -> list:
     
 
 universe_graph={"i":["a","b","c"], "b":["e"], "a":["d"], "c":[], "e":[], "d":[]}
-agents = initialize_agents(universe_graph, 5)
-run_protocol(universe_graph, agents)
+agents = initialize_agents(universe_graph, 4)
+#run_protocol(universe_graph, agents)

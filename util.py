@@ -1,4 +1,5 @@
 # util.py
+from itertools import permutations
 
 """
 This Python script contains utility methods for processing and analyzing debate data.
@@ -46,7 +47,6 @@ def generate_subgraph(UG: dict, arguments: list) -> dict:
     Returns:
         dict: The subgraph (OG) containing only the specified arguments and their relations from UG.
     """
-
     OG = {}
 
     # Create the subgraph of UG composed of the list of arguments in parameters.
@@ -114,3 +114,56 @@ def Hbs(graph: dict, argument: str) -> float:
     #print(universe_graph)
     #print(auto_generate_OG(universe_graph))
     #print(build_attackers_adjacency_list(opinion_graph, universe_graph))
+    
+def agent_order_combinations(agents: list) -> list:
+    """
+    Generates all possible permutations of agent orderings from the given list of agents.
+
+    Args:
+        agents (list): A list of agent objects.
+
+    Returns:
+        list: A list containing all possible permutations of agent orderings.
+    """
+
+    # Generate all possible permutations of agent indices.
+    agent_indices = range(len(agents))
+    permutations_indices = permutations(agent_indices)
+
+    # For each permutation of indices, create a corresponding list of agents.
+    agent_combinations = []
+    for perm_indices in permutations_indices:
+        agent_order = [agents[i] for i in perm_indices]
+        agent_combinations.append(agent_order)
+
+    return agent_combinations
+
+def Hbs2(graph: dict, argument: str):
+    
+    prevSteps={k: [1] for k in graph.keys()}
+    diff=10**(-4)
+    prevscore=10
+    score=0
+    boolean=True
+    step=0
+    while(boolean):
+        #etape 1 tout els arguments pas attaquer a 1
+        for key,value in graph.items():
+            if (len(value)==0):
+                prevSteps[key].append(1)
+            else:
+                sum=0
+                for j in value:
+                    sum=sum+prevSteps[j][step]
+                prevSteps[key].append(1/(1+sum))
+        sum=0
+        for value in prevSteps.values() : 
+            sum=sum+value[step]
+        score=sum
+        if(abs(score-prevscore)<=diff):
+            boolean=False
+        prevscore=score
+        step=step+1
+    return prevSteps[argument][step]
+
+print(Hbs2(universe_graph,"i"))
