@@ -9,6 +9,8 @@ Creation Date: 19/03/2024
 
 import os, sys, argparse, re
 
+import networkx
+
 def get_command_args() -> str:
     """ 
     Returns the .apx file provided in the command line.
@@ -33,7 +35,7 @@ def get_command_args() -> str:
 
     return file_name
 
-def read_UG_from_file(file_name: str) -> dict:
+def read_UG_from_apx(file_path: str) -> dict:
     """
     Returns the Universe Graph (UG) read from the specified file as a dictionary.
 
@@ -45,13 +47,13 @@ def read_UG_from_file(file_name: str) -> dict:
         Key : attacked argument, Value : list of attacking arguments (may be empty).
     """
 
-    if not os.path.exists(file_name):
-        print(f"The file {file_name} does not exist.")
+    if not os.path.exists(file_path):
+        print(f"The file {file_path} does not exist.")
         sys.exit(1)
 
     graph = {}
 
-    with open(file_name, 'r') as file:
+    with open(file_path, 'r') as file:
         for line in file:
 
             # Get the line content
@@ -69,15 +71,14 @@ def read_UG_from_file(file_name: str) -> dict:
                 
     return graph
 
-def write_apx_from_graph(folder_name: str, file_name: str, graph: dict) -> None:
+def export_apx(folder_name: str, file_name: str, graph: 'networkx.classes.digraph.DiGraph') -> None:
     """
-    Writes the Graph to a file in the specified folder with the given file name.
+    Writes the graph represented as a directed graph (DiGraph) to a file in the specified folder with the given file name.
 
     Args:
         folder_name (str): The name of the folder where the file will be saved.
-        file_name (str): The name of the file to write the Graph to.
-        graph (dict): The Graph represented as a dictionary.
-                      Key: attacked argument, Value: list of attacking arguments (may be empty).
+        file_name (str): The name of the file to write the graph to.
+        graph (networkx.classes.digraph.DiGraph): The graph represented as a directed graph (DiGraph).
 
     Returns:
         None.
@@ -90,16 +91,15 @@ def write_apx_from_graph(folder_name: str, file_name: str, graph: dict) -> None:
         os.mkdir(folder_name)
 
     if os.path.exists(path):
-        print(f"The file {file_name}{extension} already exists.")
+        print(f"You cannot write (export) into the file {file_name}{extension} because it already exists and contains a graph.")
         sys.exit(1)
 
     with open(path, 'w') as file:
-        # Write arguments.
-        args = graph.keys()
-        for arg in args:
-            file.write(f"arg({arg}).\n")
-
-        # Fill with attack relations.
-        for key, value in graph.items():
-            for arg in value:
-                file.write(f"att({arg},{key}).\n")
+        for arg in graph:
+            # Write arguments.
+            file.write("arg(" + str(arg) + ").\n")
+        for arg1, dicoAtt in graph.adjacency():
+            if dicoAtt:
+                for arg2, _ in dicoAtt.items():
+                    # Fill with attack relations.
+                    file.write("att(" + str(arg1) + "," + str(arg2) + ").\n")

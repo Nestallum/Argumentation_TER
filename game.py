@@ -46,7 +46,7 @@ def run_protocol(UG, agents) -> float | dict:
     """
 
     nb_turn = 0 
-    PG = {"i":[]} # Initialize public graph.
+    PG = {"0":[]} # Initialize public graph.
     previous_PG = {}
     number_of_agents = len(agents)
 
@@ -65,7 +65,7 @@ def run_protocol(UG, agents) -> float | dict:
 
     # Debate conclusion.
     print("\nSince none of the agents presented any arguments throughout an entire turn, the debate concludes.")
-    final_Vp = Hbs(PG, "i")
+    final_Vp = Hbs(PG, "0")
     print(f"final value of the issue Vp : {final_Vp}\n")
 
     return final_Vp, PG
@@ -80,9 +80,14 @@ def find_all_combinations(agents) -> list:
     Returns:
     - list: A list containing all possible combinations of agent orderings.
     """
-    pass  # Placeholder for function implementation
-    
+     # Generate all possible permutations of agent indices.
+    agent_indices = range(len(agents))
+    permutations_indices = permutations(agent_indices)
 
-universe_graph={"i":["a","b","c"], "b":["e"], "a":["d"], "c":[], "e":[], "d":[]}
-agents = initialize_agents(universe_graph, 4)
-#run_protocol(universe_graph, agents)
+    # For each permutation of indices, create a corresponding list of agents.
+    agent_combinations = []
+    for perm_indices in permutations_indices:
+        agent_order = [agents[i] for i in perm_indices]
+        agent_combinations.append(agent_order)
+
+    return agent_combinations
