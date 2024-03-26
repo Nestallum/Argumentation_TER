@@ -7,8 +7,8 @@ Authors: Mohamed AZZAOUI, Nassim LATTAB
 Creation Date: 21/03/2024
 """
 
-from agent import *
-from util import *
+from src.agent import *
+from src.util import *
 
 def initialize_agents(UG, number_of_agents) -> list:
     """

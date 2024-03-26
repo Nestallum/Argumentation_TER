@@ -85,10 +85,15 @@ def export_apx(folder_name: str, file_name: str, graph: 'networkx.classes.digrap
     """
 
     extension = ".apx"
-    path = folder_name + "/" + file_name + extension
+    early_path = "results/"
+    debate_path = early_path + folder_name + "/"
+    path = debate_path + file_name + extension
 
-    if not os.path.exists(folder_name+"/"):
-        os.mkdir(folder_name)
+    if not os.path.exists(early_path):
+        os.mkdir(early_path)
+
+    if not os.path.exists(debate_path):
+        os.mkdir(debate_path)
 
     if os.path.exists(path):
         print(f"You cannot write (export) into the file {file_name}{extension} because it already exists and contains a graph.")

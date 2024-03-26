@@ -9,20 +9,23 @@ Authors: Mohamed AZZAOUI, Nassim LATTAB
 Date of Creation: 20/03/2024
 """
 
-from IO_graph_apx import *
-from agent import *
-from game import *
-from util import *
+from src.IO_graph_apx import *
+from src.agent import *
+from src.game import *
+from src.util import *
 
 def main():
     # Generate the debate graph as a networkx.classes.digraph.DiGraph
     generated_graph = debate_graph_generation()
     
+    # Folder to export results about the debate.
+    folder_results = "debate2"
+
     # Export the networkx.classes.digraph.DiGraph to an APX file
-    export_apx("apx", "universe_graph", generated_graph)
-    
+    export_apx(folder_results, "universe_graph", generated_graph)
+
     # Read the universe graph from the APX file
-    universe_graph = read_UG_from_apx("apx/universe_graph.apx")
+    universe_graph = read_UG_from_apx("results/"+ folder_results +"/universe_graph.apx")
     
     # Initialize agents with the universe graph
     agents = initialize_agents(universe_graph, 4)

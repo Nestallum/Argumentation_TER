@@ -7,7 +7,7 @@ Authors: Mohamed AZZAOUI, Nassim LATTAB
 Creation Date: 20/03/2024
 """
 
-from util import *
+from src.util import *
 
 # Represents the agent class.
 class agent :

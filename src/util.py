@@ -1,5 +1,4 @@
 # util.py
-from itertools import permutations
 
 """
 This Python script contains utility methods for processing and analyzing debate data.
@@ -7,6 +6,8 @@ This Python script contains utility methods for processing and analyzing debate 
 Authors: Mohamed AZZAOUI, Nassim LATTAB
 Creation Date: 19/03/2024
 """
+
+from itertools import permutations
 
 def build_attackers_adjacency_list(OG, UG) -> dict:
     """
