@@ -29,7 +29,7 @@ def main():
     universe_graph = read_UG_from_apx("results/"+ folder_results +"/universe_graph.apx")
     
     # Initialize agents with the universe graph
-    agents = initialize_agents(universe_graph, 4)
+    agents = initialize_agents(universe_graph, 5)
     
     # Generate all agent order combinations
     agent_combinations = agent_order_combinations(agents)
@@ -39,10 +39,6 @@ def main():
             export_apx_OG(folder_results,f"opinion_graph {j}", i.OG)
             data[i.get_number()]=[]
             j=j+1
-    
-    
-    
-    
     
     # Run the protocol for each agent order combination
     for agent_order in agent_combinations:
