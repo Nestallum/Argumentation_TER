@@ -8,7 +8,7 @@ Creation Date: 19/03/2024
 """
 
 import os, sys, argparse, re
-
+import glob
 import networkx
 
 def get_command_args() -> str:
@@ -71,7 +71,60 @@ def read_UG_from_apx(file_path: str) -> dict:
                 
     return graph
 
-def export_apx(folder_name: str, file_name: str, graph: 'networkx.classes.digraph.DiGraph') -> None:
+def export_apx_UG( file_name: str, graph: 'networkx.classes.digraph.DiGraph') -> None:
+    """
+    Writes the graph represented as a directed graph (DiGraph) to a file in the specified folder with the given file name.
+
+    Args:
+        folder_name (str): The name of the folder where the file will be saved.
+        file_name (str): The name of the file to write the graph to.
+        graph (networkx.classes.digraph.DiGraph): The graph represented as a directed graph (DiGraph).
+
+    Returns:
+        None.
+    """
+
+    extension = ".apx"
+    early_path = "results/"
+
+    if not os.path.exists(early_path):
+        os.mkdir(early_path)
+
+    if not os.path.exists(early_path+"/"+"debate.1"):
+        os.mkdir(early_path+"/"+"debate.1")
+        folder_name="debate.1"
+    else :
+        max=1
+        for i in (glob.glob('results\*')) :
+            if(max<int((i.split("\\"))[1].split(".")[1])):
+                max=int((i.split("\\"))[1].split(".")[1])
+        var=max+1
+        print(glob.glob('results\*'))
+        os.mkdir(early_path+"/"+f"debate.{var}")
+        folder_name=f"debate.{var}"
+    
+    debate_path = early_path + folder_name + "/"
+    path = debate_path + file_name + extension
+    
+    if os.path.exists(path):
+        print(f"You cannot write (export) into the file {file_name}{extension} because it already exists and contains a graph.")
+        sys.exit(1)
+        
+    
+    with open(path, 'w') as file:
+        for arg in graph:
+            # Write arguments.
+            file.write("arg(" + str(arg) + ").\n")
+            
+        for arg1, dicoAtt in graph.adjacency():
+            if dicoAtt:
+                for arg2, _ in dicoAtt.items():
+                    # Fill with attack relations.
+                    file.write("att(" + str(arg1) + "," + str(arg2) + ").\n")
+                    
+    return folder_name
+
+def export_apx_OG(folder_name: str,file_name: str, graph: 'networkx.classes.digraph.DiGraph') -> None:
     """
     Writes the graph represented as a directed graph (DiGraph) to a file in the specified folder with the given file name.
 
@@ -88,23 +141,20 @@ def export_apx(folder_name: str, file_name: str, graph: 'networkx.classes.digrap
     early_path = "results/"
     debate_path = early_path + folder_name + "/"
     path = debate_path + file_name + extension
-
-    if not os.path.exists(early_path):
-        os.mkdir(early_path)
-
-    if not os.path.exists(debate_path):
-        os.mkdir(debate_path)
-
+    
     if os.path.exists(path):
         print(f"You cannot write (export) into the file {file_name}{extension} because it already exists and contains a graph.")
         sys.exit(1)
-
+        
     with open(path, 'w') as file:
         for arg in graph:
             # Write arguments.
             file.write("arg(" + str(arg) + ").\n")
-        for arg1, dicoAtt in graph.adjacency():
-            if dicoAtt:
-                for arg2, _ in dicoAtt.items():
+            
+        for key,value  in graph.items():
+            if len(value)!=0 :
+                for argAtt in value:
                     # Fill with attack relations.
-                    file.write("att(" + str(arg1) + "," + str(arg2) + ").\n")
+                    file.write("att(" + str(argAtt) + "," + str(key) + ").\n")
+                    
+    

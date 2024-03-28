@@ -67,8 +67,15 @@ def run_protocol(UG, agents) -> float | dict:
     print("\nSince none of the agents presented any arguments throughout an entire turn, the debate concludes.")
     final_Vp = Hbs(PG, "0")
     print(f"final value of the issue Vp : {final_Vp}\n")
-
-    return final_Vp, PG
+    
+    names=""
+    
+    for i in agents:
+            
+            names=names+f"A{i.get_number()},"
+            
+    names = names[0:len(names)-1]   
+    return final_Vp,PG,names,agents,nb_turn
 
 def find_all_combinations(agents) -> list:
     """

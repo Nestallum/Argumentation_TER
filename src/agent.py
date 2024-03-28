@@ -39,6 +39,8 @@ class agent :
             
         return self.Vk
     
+    def get_number(self):
+        return int(self.name.split(" ")[1])
     def in_comfort_zone(self, PG) -> bool:
         """ Checks if the agent is in its comfort zone.
 
@@ -82,7 +84,26 @@ class agent :
                     possible_moves.append(og_attacker)        
         
         return possible_moves
-   
+    
+    def get_possible_next_moves2(self, PG, UG) -> list:
+    
+    
+        possible_moves = []
+        ensemble = set()
+        
+        # Collecter tous les arguments possibles à partir des clés de UG
+        for i in PG.keys():
+            ensemble |= set(UG[i])
+
+        # Ajouter les clés de OG à l'ensemble
+        ensemble |= set(self.OG.keys())
+
+        # Retirer les clés déjà présentes dans PG
+        ensemble -= set(PG.keys())
+
+        possible_moves = list(ensemble)
+        print(possible_moves)
+        return possible_moves
     def best_next_move(self, PG, UG) -> dict:
         """
         Determines the best move for the agent to make towards its comfort zone.
@@ -108,7 +129,7 @@ class agent :
         # Else, find the best argument to play.
         print(f"{self.name} is not in its comfort zone.")
 
-        possible_moves = self.get_possible_next_moves(PG)
+        possible_moves = self.get_possible_next_moves2(PG,UG)
 
         # If there is no argument to play.
         if(len(possible_moves) == 0):
@@ -124,6 +145,7 @@ class agent :
             arguments.append(move)
             temp_PG = generate_subgraph(UG, arguments)
             temp_Vp = Hbs(temp_PG, "0")
+            print(temp_Vp)
             temp_gap = abs(temp_Vp - self.get_Vk())
 
             # Updating the best value
@@ -148,3 +170,5 @@ class agent :
         
         # Generate new PG
         return new_PG
+    
+    
