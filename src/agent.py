@@ -12,7 +12,7 @@ from src.util import *
 # Represents the agent class.
 class agent :
    
-    def __init__(self, i, OG, UG, cl=0.05):
+    def __init__(self, i, OG, UG, cl=0.1):
         """
         Initializes the agent with its properties.
 
@@ -91,19 +91,22 @@ class agent :
         possible_moves = []
         ensemble = set()
         
-        # Collecter tous les arguments possibles à partir des clés de UG
+        # Collecter tout les elements attaquable dans le punlic graph
         for i in PG.keys():
-            ensemble |= set(UG[i])
+            ensemble = ensemble | set(UG[i])
 
-        # Ajouter les clés de OG à l'ensemble
-        ensemble |= set(self.OG.keys())
-
-        # Retirer les clés déjà présentes dans PG
-        ensemble -= set(PG.keys())
+        
+        # Retirer si les elements deja dans le public graph
+        ensemble = ensemble - set(PG.keys())
+        
+        # intersection ensemble et og.keys
+        ensemble = ensemble & set(self.OG.keys())
 
         possible_moves = list(ensemble)
         print(possible_moves)
+        
         return possible_moves
+    
     def best_next_move(self, PG, UG) -> dict:
         """
         Determines the best move for the agent to make towards its comfort zone.
