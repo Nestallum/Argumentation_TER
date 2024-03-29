@@ -1,2 +1,5 @@
 # Ignore Python bytecode files
 __pycache__/
+
+# Ignore the "results" directory and its contents
+results/
