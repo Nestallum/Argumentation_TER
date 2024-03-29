@@ -93,6 +93,7 @@ def generate_subgraph(UG: dict, arguments: list) -> dict:
     return OG
 
 import random
+
 def auto_generate_OG(UG: dict) -> dict:
     """
     Automatically generates a subgraph (OG) from the given universe graph (UG) 
@@ -108,7 +109,6 @@ def auto_generate_OG(UG: dict) -> dict:
 
     # Extract all arguments we want to randomly select except for the issue argument.
     args = list(UG.keys()) 
-    print(args)
     args.remove('0')
 
     # Randomly pick a number of args to add for our OG.
@@ -197,7 +197,7 @@ def Hbs2(graph: dict, argument: str) -> float:
 
     # Main iteration loop until convergence
     while(boolean):
-        # Step 1: Compute harmony scores for all arguments
+        # Compute harmony scores for all arguments
         for key, value in graph.items():
             if len(value) == 0:
                 prev_steps[key].append(1)

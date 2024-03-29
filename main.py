@@ -20,42 +20,42 @@ def main():
     # Generate the debate graph as a networkx.classes.digraph.DiGraph
     generated_graph = debate_graph_generation()
     
-    
-    # Export the networkx.classes.digraph.DiGraph to an APX file
-    folder_results= export_apx_UG("universe_graph", generated_graph)
-    print(folder_results)
+    # Export the networkx.classes.digraph.DiGraph to an APX file into a subfolder of the results folder and returns it
+    debate_results = export_apx_UG("universe_graph", generated_graph)
 
     # Read the universe graph from the APX file
-    universe_graph = read_UG_from_apx("results/"+ folder_results +"/universe_graph.apx")
+    universe_graph = read_UG_from_apx("results/"+ debate_results +"/universe_graph.apx")
     
     # Initialize agents with the universe graph
-    agents = initialize_agents(universe_graph, 5)
+    number_of_agents = 4
+    agents = initialize_agents(universe_graph, number_of_agents)
     
     # Generate all agent order combinations
     agent_combinations = agent_order_combinations(agents)
+
     j = 0
-    data={"ordre_agents":[],"Vp":[],"numberOfTurn":[]}
-    for i in agents:
-            export_apx_OG(folder_results,f"opinion_graph {j}", i.OG)
-            data[i.get_number()]=[]
-            j=j+1
+    data={"order":[], "Vp":[], "numberOfTurn":[]}
+    for a in agents:
+            export_apx_OG(debate_results, f"opinion_graph {j}", a.OG)
+            data[a.get_number()]=[]
+            j+=1
     
     # Run the protocol for each agent order combination
     for agent_order in agent_combinations:
         
-        vp, public_graph,ordre_names,agents,nb = run_protocol(universe_graph, agent_order)
-        print(ordre_names)
-        export_apx_OG(folder_results,ordre_names, public_graph)
-        data["ordre_agents"].append(ordre_names)
+        vp, public_graph, order, agents, nb_turn = run_protocol(universe_graph, agent_order)
+
+        # Export results in apx and csv
+        export_apx_OG(debate_results, order, public_graph)
+        data["order"].append(order)
         data["Vp"].append(vp)
-        data["numberOfTurn"].append(nb)
-        for i in agents :
-            data[i.get_number()].append(i.in_comfort_zone(public_graph))
-        
-        # enregistrer chaque vp et son public_graph associé quelque part...
+        data["numberOfTurn"].append(nb_turn)
+        for a in agents:
+            data[a.get_number()].append(a.in_comfort_zone(public_graph))
+    
     df = pd.DataFrame(data)
-    print(folder_results)
-    df.to_csv("results/"+ folder_results+"/data.csv", index=False)
+    df.to_csv("results/"+ debate_results +"/data.csv", index=False)
+
 if __name__ == "__main__":
     main()
 
