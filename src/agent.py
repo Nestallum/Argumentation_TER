@@ -23,7 +23,7 @@ class agent :
             cl (float): The comfort level of the agent (default is 0.05).
         """
        
-        self.name=f"agent {i}"
+        self.name=f"agent_{i}"
         self.OG = OG
         self.Vk = Hbs(OG, "0") # Value of the agent’s opinion (value of the issue in the agent’s sub-graph).
         self.cl = cl
@@ -40,7 +40,8 @@ class agent :
         return self.Vk
     
     def get_number(self):
-        return int(self.name.split(" ")[1])
+        return int(self.name.split("_")[1])
+    
     def in_comfort_zone(self, PG) -> bool:
         """ Checks if the agent is in its comfort zone.
 
@@ -87,23 +88,20 @@ class agent :
     
     def get_possible_next_moves2(self, PG, UG) -> list:
     
-    
         possible_moves = []
-        ensemble = set()
+        arg_set = set()
         
-        # Collecter tout les elements attaquable dans le punlic graph
+        # Collect all attackable elements in the user graph
         for i in PG.keys():
-            ensemble = ensemble | set(UG[i])
+            arg_set |= set(UG[i])
 
-        
-        # Retirer si les elements deja dans le public graph
-        ensemble = ensemble - set(PG.keys())
-        
-        # intersection ensemble et og.keys
-        ensemble = ensemble & set(self.OG.keys())
+        # Remove elements already in the public graph
+        arg_set -= set(PG.keys())
 
-        possible_moves = list(ensemble)
-        print(possible_moves)
+        # Find the intersection between the set and OG keys
+        arg_set &= set(self.OG.keys())
+
+        possible_moves = list(arg_set)
         
         return possible_moves
     
@@ -147,8 +145,8 @@ class agent :
             # Generate temporal PG to test its new value adding a new move.
             arguments.append(move)
             temp_PG = generate_subgraph(UG, arguments)
+            
             temp_Vp = Hbs(temp_PG, "0")
-            print(temp_Vp)
             temp_gap = abs(temp_Vp - self.get_Vk())
 
             # Updating the best value

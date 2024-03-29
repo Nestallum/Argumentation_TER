@@ -71,7 +71,7 @@ def read_UG_from_apx(file_path: str) -> dict:
                 
     return graph
 
-def export_apx_UG( file_name: str, graph: 'networkx.classes.digraph.DiGraph') -> None:
+def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph') -> None:
     """
     Writes the graph represented as a directed graph (DiGraph) to a file in the specified folder with the given file name.
 
@@ -90,18 +90,19 @@ def export_apx_UG( file_name: str, graph: 'networkx.classes.digraph.DiGraph') ->
     if not os.path.exists(early_path):
         os.mkdir(early_path)
 
-    if not os.path.exists(early_path+"/"+"debate.1"):
-        os.mkdir(early_path+"/"+"debate.1")
-        folder_name="debate.1"
+    if not os.path.exists(early_path+"/debate_1"):
+        os.mkdir(early_path+"/debate_1")
+        folder_name = "debate_1"
+
+    # Create the right subfolder where to put results    
     else :
-        max=1
-        for i in (glob.glob('results\*')) :
-            if(max<int((i.split("\\"))[1].split(".")[1])):
-                max=int((i.split("\\"))[1].split(".")[1])
-        var=max+1
-        print(glob.glob('results\*'))
-        os.mkdir(early_path+"/"+f"debate.{var}")
-        folder_name=f"debate.{var}"
+        last_subfolder = 1
+        for sub_folder in (glob.glob('results\*')) :
+            if(last_subfolder < int((sub_folder.split("\\"))[1].split("_")[1])):
+                last_subfolder = int((sub_folder.split("\\"))[1].split("_")[1])
+        new_val = last_subfolder + 1
+        os.mkdir(early_path+f"/debate_{new_val}")
+        folder_name = f"debate_{new_val}"
     
     debate_path = early_path + folder_name + "/"
     path = debate_path + file_name + extension
@@ -110,7 +111,7 @@ def export_apx_UG( file_name: str, graph: 'networkx.classes.digraph.DiGraph') ->
         print(f"You cannot write (export) into the file {file_name}{extension} because it already exists and contains a graph.")
         sys.exit(1)
         
-    
+    # Create and fill the file
     with open(path, 'w') as file:
         for arg in graph:
             # Write arguments.
