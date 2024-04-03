@@ -52,7 +52,10 @@ def main(numberOfagent,numberDebate="ALL",combinaison="ALL"):
             data["Vp"].append(vp)
             data["numberOfTurn"].append(nb_turn)
             for a in agents:
-                data[a.get_number()].append(a.in_comfort_zone(public_graph))
+                historic_data = []
+                historic_data.append(a.in_comfort_zone(public_graph))
+                historic_data.append(a.historic)
+                data[a.get_number()].append(historic_data)
         
         df = pd.DataFrame(data)
         df.to_csv("results/"+ debate_results +"/data.csv", index=False)
@@ -78,7 +81,6 @@ def main(numberOfagent,numberDebate="ALL",combinaison="ALL"):
             folder_name = f"debate_{new_val}"
             
         # Create the right subfolder where to put results    
-        
         UG=read_UG_from_apx("results/debate_"+numberDebate+"/universe_graph.apx")
         export_apx_OG(folder_name, f"univers_graph", UG,early_path="replays/")
         agents=[]
@@ -164,8 +166,8 @@ def main(numberOfagent,numberDebate="ALL",combinaison="ALL"):
             
         vp, public_graph, order, agents, nb_turn = run_protocol(UG, agent_order)
 
-            # Export results in apx and csv
-        export_apx_OG(folder_name, order, public_graph,early_path="replays/")
+        # Export results in apx and csv
+        export_apx_OG(folder_name, order, public_graph, early_path="replays/")
         data["order"].append(order)
         data["Vp"].append(vp)
         data["numberOfTurn"].append(nb_turn)
@@ -177,5 +179,5 @@ def main(numberOfagent,numberDebate="ALL",combinaison="ALL"):
         df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
     
 if __name__ == "__main__":
-    main(3,"11","0,1,2")
+    main(3)
 
