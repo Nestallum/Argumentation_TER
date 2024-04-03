@@ -52,6 +52,7 @@ def run_protocol(UG, agents) -> float | dict:
     PG = {"0":[]} # Initialize public graph.
     previous_PG = {}
     number_of_agents = len(agents)
+    historic = []
 
     # Run the debate until no arguments are presented in a turn.
     while(PG != previous_PG):
@@ -64,8 +65,12 @@ def run_protocol(UG, agents) -> float | dict:
         # Iterate through each agent to make their move.
         for k in range(number_of_agents):
             print(f"\n{'- Turn of ' + agents[k].name + ' :':^40}")
-            PG = agents[k].best_next_move(PG, UG)
+            PG = agents[k].best_next_move(PG, UG, nb_turn)
 
+
+    for k in range(number_of_agents):
+        historic.append(agents[k].historic)
+    print(historic)
     # Debate conclusion.
     print("\nSince none of the agents presented any arguments throughout an entire turn, the debate concludes.")
     final_Vp = Hbs(PG, "0")
