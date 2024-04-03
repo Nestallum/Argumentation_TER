@@ -187,7 +187,7 @@ def Hbs2(graph: dict, argument: str) -> float:
     prev_steps = {k: [1] for k in graph.keys()}
 
     # Define convergence threshold
-    diff = 10**(-1)
+    diff = 10**(-5)
 
     # Initialize variables
     prev_score = len(graph.keys())

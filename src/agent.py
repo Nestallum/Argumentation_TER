@@ -12,7 +12,7 @@ from src.util import *
 # Represents the agent class.
 class agent :
    
-    def __init__(self, i, OG, UG, cl=0.1):
+    def __init__(self, i, OG, UG, cl=0.05):
         """
         Initializes the agent with its properties.
 
@@ -65,28 +65,9 @@ class agent :
         
         return False
    
-    def get_possible_next_moves(self, PG) -> list:
-        """
-        Returns all the possible moves that can be played by the agent.
-
-        Args:
-            PG (dict): The public graph representing the current state of the debate.
-
-        Returns:
-            list: A list of arguments that can be added to the public graph.
-        """
-        
-        possible_moves = []
-       
-        for pg_arg in PG:
-            for og_attacker, og_attacked in self.attackers_adjacency_list.items():
-                # If an argument in the public graph (PG) is attacked and the attacker is not in PG, then we can add it.
-                if(pg_arg in og_attacked and og_attacker not in PG.keys()):
-                    possible_moves.append(og_attacker)        
-        
-        return possible_moves
     
-    def get_possible_next_moves2(self, PG, UG) -> list:
+    
+    def get_possible_next_moves(self, PG, UG) -> list:
     
         possible_moves = []
         arg_set = set()
@@ -103,6 +84,7 @@ class agent :
 
         possible_moves = list(arg_set)
         
+        print(possible_moves)
         return possible_moves
     
     def best_next_move(self, PG, UG) -> dict:
@@ -130,7 +112,7 @@ class agent :
         # Else, find the best argument to play.
         print(f"{self.name} is not in its comfort zone.")
 
-        possible_moves = self.get_possible_next_moves2(PG,UG)
+        possible_moves = self.get_possible_next_moves(PG,UG)
 
         # If there is no argument to play.
         if(len(possible_moves) == 0):
@@ -145,7 +127,6 @@ class agent :
             # Generate temporal PG to test its new value adding a new move.
             arguments.append(move)
             temp_PG = generate_subgraph(UG, arguments)
-            
             temp_Vp = Hbs(temp_PG, "0")
             temp_gap = abs(temp_Vp - self.get_Vk())
 

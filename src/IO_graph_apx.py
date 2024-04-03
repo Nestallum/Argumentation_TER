@@ -71,7 +71,7 @@ def read_UG_from_apx(file_path: str) -> dict:
                 
     return graph
 
-def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph') -> None:
+def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph',early_path="results/") -> None:
     """
     Writes the graph represented as a directed graph (DiGraph) to a file in the specified folder with the given file name.
 
@@ -85,7 +85,6 @@ def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph') -> 
     """
 
     extension = ".apx"
-    early_path = "results/"
 
     if not os.path.exists(early_path):
         os.mkdir(early_path)
@@ -125,7 +124,7 @@ def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph') -> 
                     
     return folder_name
 
-def export_apx_OG(folder_name: str,file_name: str, graph: 'networkx.classes.digraph.DiGraph') -> None:
+def export_apx_OG(folder_name: str,file_name: str, graph: 'networkx.classes.digraph.DiGraph',early_path="results/") -> None:
     """
     Writes the graph represented as a directed graph (DiGraph) to a file in the specified folder with the given file name.
 
@@ -139,7 +138,6 @@ def export_apx_OG(folder_name: str,file_name: str, graph: 'networkx.classes.digr
     """
 
     extension = ".apx"
-    early_path = "results/"
     debate_path = early_path + folder_name + "/"
     path = debate_path + file_name + extension
     
