@@ -122,7 +122,7 @@ def auto_generate_OG(UG: dict) -> dict:
 
     return generate_subgraph(UG, selected_args)
 
-def Hbs(graph: dict, argument: str) -> float:
+def Hbs2(graph: dict, argument: str) -> float:
     """ 
     Calculates and returns the Belief Strength (Hbs) of an argument.
 
@@ -170,7 +170,7 @@ def agent_order_combinations(agents: list) -> list:
 
     return agent_combinations
 
-def Hbs2(graph: dict, argument: str) -> float:
+def Hbs(graph: dict, argument: str) -> float:
     """
     Implements the Harmony-based System (Hbs) algorithm to compute the harmony score for a given argument in a debate graph.
 
@@ -188,15 +188,12 @@ def Hbs2(graph: dict, argument: str) -> float:
 
     # Define convergence threshold
     diff = 10**(-5)
-
+    numberDiff=0
+    step=0
     # Initialize variables
     prev_score = len(graph.keys())
-    score = 0
-    boolean = True
-    step = 0
-
     # Main iteration loop until convergence
-    while(boolean):
+    while(numberDiff<len(graph.keys())):
         # Compute harmony scores for all arguments
         for key, value in graph.items():
             if len(value) == 0:
@@ -208,17 +205,10 @@ def Hbs2(graph: dict, argument: str) -> float:
                 prev_steps[key].append(1 / (1 + sum))
 
         # Calculate total harmony score
-        sum = 0
         for value in prev_steps.values():
-            sum += value[step]
-        score = sum
-
-        # Check convergence
-        if abs(score - prev_score) <= diff:
-            boolean = False
-            
-        prev_score = score
-        step += 1
+            if abs(value[step] - value[step+1]) <= diff:
+                numberDiff=numberDiff+1
+        step = step + 1
 
     # Return the harmony score for the specified argument
     return prev_steps[argument][step]
