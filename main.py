@@ -17,7 +17,7 @@ def main():
         nb_agents = int(input("How many agents?")) 
         generate_debate(nb_agents)
     elif choice == 'R':
-        debate_number = input("path of the debate?: ")
+        debate_number = input("Path of the debate?: ")
         choice = input("Replay all combinations of agent order? (Y/N)")
         if choice == 'Y': 
             replay_debate(debate_number)
