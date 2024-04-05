@@ -157,9 +157,11 @@ def generate_debate(numberOfAgents: int) -> None:
         data["numberOfTurn"].append(nb_turn)
         for a in agents:
             historic_data = []
+            historic_data.append(a.name)
             historic_data.append(a.in_comfort_zone(public_graph))
             historic_data.append(a.historic)
             data[a.get_number()].append(historic_data)
+            a.historic = dict()
     
     df = pd.DataFrame(data)
     df.to_csv("results/"+ debate_results +"/data.csv", index=False)
@@ -196,6 +198,7 @@ def replay_debate(debate_path: str) -> None:
         new_val = last_subfolder + 1
         os.mkdir(early_path+f"/{debate_path_last}.{new_val}")
         folder_name = f"/{debate_path_last}.{new_val}"
+        
     # Create the right subfolder where to put results    
     UG = read_UG_from_apx(debate_path+"/universe_graph.apx")
     csv_path = (debate_path+"/data.csv")
@@ -236,9 +239,11 @@ def replay_debate(debate_path: str) -> None:
         data["numberOfTurn"].append(nb_turn)
         for a in agents:
             historic_data = []
+            historic_data.append(a.name)
             historic_data.append(a.in_comfort_zone(public_graph))
             historic_data.append(a.historic)
             data[a.get_number()].append(historic_data)
+            a.historic = dict()
     
     df = pd.DataFrame(data)
     df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
@@ -316,7 +321,12 @@ def replay_combination(debate_path: str, combination: str) -> None:
     data["Vp"].append(vp)
     data["numberOfTurn"].append(nb_turn)
     for a in agents:
-            data[a.get_number()].append(a.in_comfort_zone(public_graph))
+        historic_data = []
+        historic_data.append(a.name)
+        historic_data.append(a.in_comfort_zone(public_graph))
+        historic_data.append(a.historic)
+        data[a.get_number()].append(historic_data)
+        a.historic = dict()
     
     
     df = pd.DataFrame(data)
