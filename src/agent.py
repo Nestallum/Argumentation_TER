@@ -82,9 +82,9 @@ class agent :
         arg_set &= set(self.OG.keys())
 
         possible_moves = list(arg_set)
-        
         print(possible_moves)
-        return possible_moves
+        print(sorted(possible_moves))
+        return sorted(possible_moves)
     
     def best_next_move(self, PG, UG, turn) -> dict:
         """

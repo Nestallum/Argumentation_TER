@@ -164,7 +164,8 @@ def generate_debate(numberOfAgents: int) -> None:
     df = pd.DataFrame(data)
     df.to_csv("results/"+ debate_results +"/data.csv", index=False)
 
-def replay_debate(debate_number: int) -> None:
+
+def replay_debate(debate_path: str) -> None:
     """
     Replays the debate with the given debate number.
 
@@ -174,30 +175,30 @@ def replay_debate(debate_number: int) -> None:
     Returns:
         None
     """
-
-    early_path = "replays/"
-
+    if not os.path.exists(debate_path):
+        print(f"The file {debate_path} does not exist.")
+        return None
+    
+    early_path="replays/"
+    print(debate_path.split("/"))
+    debate_path_last=debate_path.split("/")[len(debate_path.split("/"))-1]
     if not os.path.exists(early_path):
         os.mkdir(early_path)
 
-    # Create replay first replay in case replays/ is empty.
-    if not os.path.exists(early_path+"/debate_1"):
-        os.mkdir(early_path+"/debate_1")
-        folder_name = "debate_1"
-
-    # Find the last replay number and increment it.
+    if not os.path.exists(early_path+debate_path_last+".1"):
+        os.mkdir(early_path+debate_path_last+".1")
+        folder_name = debate_path_last+".1"
     else :
         last_subfolder = 1
         for sub_folder in (glob.glob(r'replays\*')) :
-            if(last_subfolder < int((sub_folder.split("\\"))[1].split("_")[1])):
-                last_subfolder = int((sub_folder.split("\\"))[1].split("_")[1])
+            if(last_subfolder < int((sub_folder.split("\\"))[1].split(".")[1])):
+                last_subfolder = int((sub_folder.split("\\"))[1].split(".")[1])
         new_val = last_subfolder + 1
-        os.mkdir(early_path+f"/debate_{new_val}")
-        folder_name = f"debate_{new_val}"
-        
+        os.mkdir(early_path+f"/{debate_path_last}.{new_val}")
+        folder_name = f"/{debate_path_last}.{new_val}"
     # Create the right subfolder where to put results    
-    UG = read_UG_from_apx("results/debate_"+debate_number+"/universe_graph.apx")
-    csv_path = ("results/debate_"+debate_number+"/data.csv")
+    UG = read_UG_from_apx(debate_path+"/universe_graph.apx")
+    csv_path = (debate_path+"/data.csv")
 
     # Open CSV file to get the right number of agents to replay the debate.
     with open(csv_path, newline='') as csvfile:
@@ -211,7 +212,7 @@ def replay_debate(debate_number: int) -> None:
     agents=[]
     
     for i in range(int(numberOfAgents)):
-        new = f"results/debate_{debate_number}/opinion_graph_{i}.apx"
+        new = f"{debate_path}/opinion_graph_{i}.apx"
         agents.append(agent(i,read_UG_from_apx(new),UG))
         export_apx(folder_name, f"opinion_graph_{i}", agents[i].OG, early_path="replays/")
 
@@ -242,28 +243,33 @@ def replay_debate(debate_number: int) -> None:
     df = pd.DataFrame(data)
     df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
 
-def replay_combination(debate_number: int, combination: str) -> None:
+def replay_combination(debate_path: str, combination: str) -> None:
     early_path = "replays/"
 
+    if not os.path.exists(debate_path):
+        print(f"The file {debate_path} does not exist.")
+        return None
+    
+    early_path="replays/"
+    print(debate_path.split("/"))
+    debate_path_last=debate_path.split("/")[len(debate_path.split("/"))-1]
     if not os.path.exists(early_path):
         os.mkdir(early_path)
 
-    if not os.path.exists(early_path+"/debate_1"):
-        os.mkdir(early_path+"/debate_1")
-        folder_name = "debate_1"
+    if not os.path.exists(early_path+debate_path_last+".1"):
+        os.mkdir(early_path+debate_path_last+".1")
+        folder_name = debate_path_last+".1"
     else :
         last_subfolder = 1
         for sub_folder in (glob.glob(r'replays\*')) :
-            if(last_subfolder < int((sub_folder.split("\\"))[1].split("_")[1])):
-                last_subfolder = int((sub_folder.split("\\"))[1].split("_")[1])
+            if(last_subfolder < int((sub_folder.split("\\"))[1].split(".")[1])):
+                last_subfolder = int((sub_folder.split("\\"))[1].split(".")[1])
         new_val = last_subfolder + 1
-        os.mkdir(early_path+f"/debate_{new_val}")
-        folder_name = f"debate_{new_val}"
-        
+        os.mkdir(early_path+f"/{debate_path_last}.{new_val}")
+        folder_name = f"/{debate_path_last}.{new_val}"
     # Create the right subfolder where to put results    
-    
-    UG=read_UG_from_apx("results/debate_"+debate_number+"/universe_graph.apx")
-    csv_path = ("results/debate_"+debate_number+"/data.csv")
+    UG = read_UG_from_apx(debate_path+"/universe_graph.apx")
+    csv_path = (debate_path+"/data.csv")
 
     # Open CSV file to get the right number of agents to replay the debate.
     with open(csv_path, newline='') as csvfile:
@@ -277,8 +283,8 @@ def replay_combination(debate_number: int, combination: str) -> None:
     agents=[]
     
     for i in range(int(numberOfAgents)) :
-        new=f"results/debate_{debate_number}/opinion_graph_{i}.apx"
-        agents.append(agent(i, read_UG_from_apx(new), UG))
+        new = f"{debate_path}/opinion_graph_{i}.apx"
+        agents.append(agent(i,read_UG_from_apx(new),UG))
         export_apx(folder_name, f"opinion_graph_{i}", agents[i].OG, early_path="replays/")
 
     j = 0
@@ -312,6 +318,6 @@ def replay_combination(debate_number: int, combination: str) -> None:
     for a in agents:
             data[a.get_number()].append(a.in_comfort_zone(public_graph))
     
-    data["debateReplay"]=debate_number
+    
     df = pd.DataFrame(data)
     df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
