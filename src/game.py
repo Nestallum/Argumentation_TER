@@ -152,18 +152,9 @@ def generate_debate(numberOfAgents: int) -> None:
 
         # Export results in apx and csv
         export_apx(debate_results, order, public_graph)
-        data["order"].append(order)
-        data["Vp"].append(vp)
-        data["numberOfTurn"].append(nb_turn)
-        for a in agents:
-            historic_data = []
-            historic_data.append(a.name)
-            historic_data.append(a.in_comfort_zone(public_graph))
-            historic_data.append(a.historic)
-            data[a.get_number()].append(historic_data)
-            a.historic = dict()
+        exported_data = export_results(data, public_graph, order, vp, nb_turn, agents)
     
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(exported_data)
     df.to_csv("results/"+ debate_results +"/data.csv", index=False)
 
 
@@ -234,16 +225,7 @@ def replay_debate(debate_path: str) -> None:
 
         # Export results in apx and csv
         export_apx(folder_name, order, public_graph,early_path="replays/")
-        data["order"].append(order)
-        data["Vp"].append(vp)
-        data["numberOfTurn"].append(nb_turn)
-        for a in agents:
-            historic_data = []
-            historic_data.append(a.name)
-            historic_data.append(a.in_comfort_zone(public_graph))
-            historic_data.append(a.historic)
-            data[a.get_number()].append(historic_data)
-            a.historic = dict()
+        data = export_results(data, public_graph, order, vp, nb_turn, agents)
     
     df = pd.DataFrame(data)
     df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
@@ -299,24 +281,30 @@ def replay_combination(debate_path: str, combination: str) -> None:
             j+=1
     
     combinations = find_all_combinations(agents)
-    agent_order=""
+    # Find the right combination to replay
+    agent_order = ""
     for i in combinations:
-        word=""
+        word = ""
         for j in i :
             print(j.get_number())
             number=f"{j.get_number()}"
-            word=word+","+number
+            word += ","+number
         print(word)
         if(word[1:len(word)]==combination):
             print(word[1:len(word)])
             agent_order=i
-    # Run the protocol for each agent order combination
     
-        
     vp, public_graph, order, agents, nb_turn = run_protocol(UG, agent_order)
 
     # Export results in apx and csv
     export_apx(folder_name, order, public_graph, early_path="replays/")
+    exported_data = export_results(data, public_graph, order, vp, nb_turn, agents)
+    
+    df = pd.DataFrame(exported_data)
+    df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
+
+def export_results(data, public_graph, order, vp, nb_turn, agents) -> dict:
+
     data["order"].append(order)
     data["Vp"].append(vp)
     data["numberOfTurn"].append(nb_turn)
@@ -327,7 +315,5 @@ def replay_combination(debate_path: str, combination: str) -> None:
         historic_data.append(a.historic)
         data[a.get_number()].append(historic_data)
         a.historic = dict()
+    return data
     
-    
-    df = pd.DataFrame(data)
-    df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
