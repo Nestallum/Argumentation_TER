@@ -71,7 +71,7 @@ def read_UG_from_apx(file_path: str) -> dict:
                 
     return graph
 
-def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph',early_path="results/") -> None:
+def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph', early_path="results/") -> None:
     """
     Writes the graph represented as a directed graph (DiGraph) to a file in the specified folder with the given file name.
 
@@ -96,7 +96,7 @@ def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph',earl
     # Create the right subfolder where to put results    
     else :
         last_subfolder = 1
-        for sub_folder in (glob.glob('results\*')) :
+        for sub_folder in (glob.glob(r'results\*')) :
             if(last_subfolder < int((sub_folder.split("\\"))[1].split("_")[1])):
                 last_subfolder = int((sub_folder.split("\\"))[1].split("_")[1])
         new_val = last_subfolder + 1
@@ -124,14 +124,14 @@ def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph',earl
                     
     return folder_name
 
-def export_apx_OG(folder_name: str,file_name: str, graph: 'networkx.classes.digraph.DiGraph',early_path="results/") -> None:
+def export_apx(folder_name: str, file_name: str, graph: dict, early_path="results/") -> None:
     """
-    Writes the graph represented as a directed graph (DiGraph) to a file in the specified folder with the given file name.
+    Writes the graph represented as a directed grap to a file in the specified folder with the given file name.
 
     Args:
         folder_name (str): The name of the folder where the file will be saved.
         file_name (str): The name of the file to write the graph to.
-        graph (networkx.classes.digraph.DiGraph): The graph represented as a directed graph (DiGraph).
+        graph (dict): The graph represented as a directed graph (DiGraph).
 
     Returns:
         None.
