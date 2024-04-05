@@ -18,7 +18,15 @@ def main():
         generate_debate(nb_agents)
     elif choice == 'R':
         debate_number = input("Number of the debate to replay?: ")
-        replay_debate(debate_number)
+        choice = input("Replay all combinations of agent order? (Y/N)")
+        if choice == 'Y': 
+            replay_debate(debate_number)
+        elif choice == 'N':
+            combination = input("Enter a valid combination (id_agent1,id_agent2,...): ")
+            replay_combination(debate_number, combination)
+        else:
+            print("error.")
+            sys.exit(1)
     else:
         print("error.")
         sys.exit(1)

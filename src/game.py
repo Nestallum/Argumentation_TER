@@ -73,10 +73,10 @@ def run_protocol(UG, agents) -> float | dict:
             print(f"\n{'- Turn of ' + agents[k].name + ' :':^40}")
             PG = agents[k].best_next_move(PG, UG, nb_turn)
 
-
     for k in range(number_of_agents):
         historic.append(agents[k].historic)
     print(historic)
+
     # Debate conclusion.
     print("\nSince none of the agents presented any arguments throughout an entire turn, the debate concludes.")
     final_Vp = Hbs(PG, "0")
@@ -210,7 +210,7 @@ def replay_debate(debate_number: int) -> None:
     export_apx(folder_name, f"univers_graph", UG, early_path)
     agents=[]
     
-    for i in range(int(numberOfAgents)) :
+    for i in range(int(numberOfAgents)):
         new = f"results/debate_{debate_number}/opinion_graph_{i}.apx"
         agents.append(agent(i,read_UG_from_apx(new),UG))
         export_apx(folder_name, f"opinion_graph_{i}", agents[i].OG, early_path="replays/")
@@ -239,5 +239,79 @@ def replay_debate(debate_number: int) -> None:
             historic_data.append(a.historic)
             data[a.get_number()].append(historic_data)
     
+    df = pd.DataFrame(data)
+    df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
+
+def replay_combination(debate_number: int, combination: str) -> None:
+    early_path = "replays/"
+
+    if not os.path.exists(early_path):
+        os.mkdir(early_path)
+
+    if not os.path.exists(early_path+"/debate_1"):
+        os.mkdir(early_path+"/debate_1")
+        folder_name = "debate_1"
+    else :
+        last_subfolder = 1
+        for sub_folder in (glob.glob(r'replays\*')) :
+            if(last_subfolder < int((sub_folder.split("\\"))[1].split("_")[1])):
+                last_subfolder = int((sub_folder.split("\\"))[1].split("_")[1])
+        new_val = last_subfolder + 1
+        os.mkdir(early_path+f"/debate_{new_val}")
+        folder_name = f"debate_{new_val}"
+        
+    # Create the right subfolder where to put results    
+    
+    UG=read_UG_from_apx("results/debate_"+debate_number+"/universe_graph.apx")
+    csv_path = ("results/debate_"+debate_number+"/data.csv")
+
+    # Open CSV file to get the right number of agents to replay the debate.
+    with open(csv_path, newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        next(reader)
+        second_row = next(reader)
+        first_column_value = second_row[0]
+        numberOfAgents = len(first_column_value.split(","))
+
+    export_apx(folder_name, f"univers_graph", UG, early_path="replays/")
+    agents=[]
+    
+    for i in range(int(numberOfAgents)) :
+        new=f"results/debate_{debate_number}/opinion_graph_{i}.apx"
+        agents.append(agent(i, read_UG_from_apx(new), UG))
+        export_apx(folder_name, f"opinion_graph_{i}", agents[i].OG, early_path="replays/")
+
+    j = 0
+    data={"order":[], "Vp":[], "numberOfTurn":[]}
+    for a in agents:
+            data[a.get_number()]=[]
+            j+=1
+    
+    combinations = find_all_combinations(agents)
+    agent_order=""
+    for i in combinations:
+        word=""
+        for j in i :
+            print(j.get_number())
+            number=f"{j.get_number()}"
+            word=word+","+number
+        print(word)
+        if(word[1:len(word)]==combination):
+            print(word[1:len(word)])
+            agent_order=i
+    # Run the protocol for each agent order combination
+    
+        
+    vp, public_graph, order, agents, nb_turn = run_protocol(UG, agent_order)
+
+    # Export results in apx and csv
+    export_apx(folder_name, order, public_graph, early_path="replays/")
+    data["order"].append(order)
+    data["Vp"].append(vp)
+    data["numberOfTurn"].append(nb_turn)
+    for a in agents:
+            data[a.get_number()].append(a.in_comfort_zone(public_graph))
+    
+    data["debateReplay"]=debate_number
     df = pd.DataFrame(data)
     df.to_csv("replays/"+ folder_name +"/data.csv", index=False)

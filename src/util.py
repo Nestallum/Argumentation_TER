@@ -194,6 +194,7 @@ def Hbs(graph: dict, argument: str) -> float:
     prev_score = len(graph.keys())
     # Main iteration loop until convergence
     while(numberDiff<len(graph.keys())):
+        numberDiff = 0
         # Compute harmony scores for all arguments
         for key, value in graph.items():
             if len(value) == 0:
