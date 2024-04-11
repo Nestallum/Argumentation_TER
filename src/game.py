@@ -140,24 +140,35 @@ def generate_debate(numberOfAgents: int) -> None:
 
     j = 0
     data={"order":[], "Vp":[], "numberOfTurn":[]}
+    data2={"order":[], "Vp":[], "numberOfTurn":[]}
+    data2["all tour"]=[]
     for a in agents:
         export_apx(debate_results, f"opinion_graph_{j}", a.OG)
         data[a.get_number()]=[]
         j+=1
 
     # Run the protocol for each agent order combination
+    i=0
     for agent_order in agent_combinations:
         
         vp, public_graph, order, agents, nb_turn = run_protocol(universe_graph, agent_order)
 
         # Export results in apx and csv
         export_apx(debate_results, order, public_graph)
+        exported_data2 = export_results_2(data2, public_graph, order, vp, nb_turn, agents,i)
         exported_data = export_results(data, public_graph, order, vp, nb_turn, agents)
+        i=i+1
+        
+     
+
+    
+    
     
     df = pd.DataFrame(exported_data)
     df.to_csv("results/"+ debate_results +"/data.csv", index=False)
-
-
+    print(exported_data2)
+    df2 = pd.DataFrame(exported_data2)
+    df2.to_csv("results/"+ debate_results +"/data2.csv", index=False)
 def replay_debate(debate_path: str) -> None:
     """
     Replays the debate with the given debate number.
@@ -316,4 +327,24 @@ def export_results(data, public_graph, order, vp, nb_turn, agents) -> dict:
         data[a.get_number()].append(historic_data)
         a.historic = dict()
     return data
-    
+
+def export_results_2(data, public_graph, order, vp, nb_turn, agents,j) -> dict:
+
+    data["order"].append(order)
+    data["Vp"].append(vp)
+    data["numberOfTurn"].append(nb_turn)
+    l = 0
+    all_turn=dict()
+    print(nb_turn)
+    for i in range(nb_turn):
+        turn=[]
+        dicto=dict()
+        for a in agents:
+            print(a.name)
+            print(a.historic)
+            dicto[a.name]=a.historic[i+1]
+        turn.append(dicto)
+        all_turn[f"turn {i}"]=turn
+    data["all tour"].append(all_turn)
+    print(all_turn)
+    return data
