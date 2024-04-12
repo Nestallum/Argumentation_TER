@@ -123,31 +123,6 @@ def auto_generate_OG(UG: dict) -> dict:
     selected_args.append('0') 
 
     return generate_subgraph(UG, selected_args)
-
-def Hbs2(graph: dict, argument: str) -> float:
-    """ 
-    Calculates and returns the Belief Strength (Hbs) of an argument.
-
-    Args:
-        graph (dict): The graph represented as a dictionary.
-        argument (str): The argument for which to calculate the Belief Strength (Hbs).
-
-    Returns:
-        float: The Belief Strength (Hbs) of the argument.
-    """
-    
-    # If nobody attacks the argument, the value is of its Hbs is 1.
-    if len(graph[argument]) == 0: 
-        return 1
-    
-    else:
-        # Sum the Belief Strengths (Hbs) of all attacking arguments.
-        total_hbs = 0                  
-        for a in range(len(graph[argument])):
-            total_hbs += Hbs(graph, graph[argument][a])
-            
-        # Calculate and return the Belief Strength (Hbs) of the argument.
-        return 1 / (1 + total_hbs)
     
 def agent_order_combinations(agents: list) -> list:
     """
@@ -190,15 +165,15 @@ def Hbs(graph: dict, argument: str) -> float:
 
     # Define convergence threshold
     diff = 10**(-5)
+    # Initialize variables
     numberDiff=0
     step=0
-    # Initialize variables
-    prev_score = len(graph.keys())
+
     # Main iteration loop until convergence
     while(numberDiff<len(graph.keys())):
         numberDiff = 0
+
         # Compute harmony scores for all arguments
-        
         for key, value in graph.items():
             if len(value) == 0:
                 prev_steps[key].append(1)
