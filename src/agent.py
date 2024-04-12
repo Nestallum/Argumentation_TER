@@ -28,7 +28,7 @@ class agent :
         self.Vk = Hbs(OG, "0") # Value of the agent’s opinion (value of the issue in the agent’s sub-graph).
         self.cl = cl
         self.attackers_adjacency_list = build_attackers_adjacency_list(OG, UG) # List of attackers.
-        self.historic = dict()
+        self.historical = dict()
         
     def get_Vk(self) -> float:
         """
@@ -82,8 +82,7 @@ class agent :
         arg_set &= set(self.OG.keys())
 
         possible_moves = list(arg_set)
-        print(possible_moves)
-        print(sorted(possible_moves))
+        
         return sorted(possible_moves)
     
     def best_next_move(self, PG, UG, turn) -> dict:
@@ -106,7 +105,7 @@ class agent :
         # Already in comfort zone, plays nothing.
         if(self.in_comfort_zone(PG)):
             print(f"{self.name} is in its comfort zone. No need to play an argument.")
-            self.historic[turn] = None
+            self.historical[turn] = None
             return PG
         
         # Else, find the best argument to play.
@@ -117,7 +116,7 @@ class agent :
         # If there is no argument to play.
         if(len(possible_moves) == 0):
             print("No playable moves, no addition.")
-            self.historic[turn] = None
+            self.historical[turn] = None
             return PG
         
         # Else, find the best argument to play.
@@ -139,13 +138,13 @@ class agent :
         # If no argument brings him closer to his comfort zone.
         if(arg_to_play == None):
             print("No good arguments, no addition.")
-            self.historic[turn] = None
+            self.historical[turn] = None
             return PG
         
         # Else, plays one of the goods arguments.
         arguments = [keys for keys in PG]
         arguments.append(arg_to_play)
-        self.historic[turn] = arg_to_play
+        self.historical[turn] = arg_to_play
         
         # Final prints
         print(f"{self.name} adds argument {arg_to_play} to the public graph.")
