@@ -58,7 +58,7 @@ def run_protocol(UG, agents) -> float | dict:
     PG = {"0":[]} # Initialize public graph.
     previous_PG = {}
     number_of_agents = len(agents)
-    historic = []
+    historical = []
 
     # Run the debate until no arguments are presented in a turn.
     while(PG != previous_PG):
@@ -74,8 +74,7 @@ def run_protocol(UG, agents) -> float | dict:
             PG = agents[k].best_next_move(PG, UG, nb_turn)
 
     for k in range(number_of_agents):
-        historic.append(agents[k].historic)
-    print(historic)
+        historical.append(agents[k].historical)
 
     # Debate conclusion.
     print("\nSince none of the agents presented any arguments throughout an entire turn, the debate concludes.")
@@ -138,37 +137,40 @@ def generate_debate(numberOfAgents: int) -> None:
     # Generate all agent order combinations
     agent_combinations = agent_order_combinations(agents)
 
+    # Initialize csv columns
+    data = {"order":[], "Vp":[], "numberOfTurn":[]}
+
     j = 0
-    data={"order":[], "Vp":[], "numberOfTurn":[]}
-    data2={"order":[], "Vp":[], "numberOfTurn":[]}
-    data2["all tour"]=[]
     for a in agents:
         export_apx(debate_results, f"opinion_graph_{j}", a.OG)
-        data[a.get_number()]=[]
-        j+=1
+        data[a.get_number()] = []
+        j += 1
+
+    # Data for csv2
+    data2 = {"order":[], "Vp":[], "numberOfTurn":[], "turnHistory":[]}
 
     # Run the protocol for each agent order combination
-    i=0
     for agent_order in agent_combinations:
         
         vp, public_graph, order, agents, nb_turn = run_protocol(universe_graph, agent_order)
 
         # Export results in apx and csv
         export_apx(debate_results, order, public_graph)
-        exported_data2 = export_results_2(data2, public_graph, order, vp, nb_turn, agents,i)
         exported_data = export_results(data, public_graph, order, vp, nb_turn, agents)
-        i=i+1
-        
-     
+        exported_data2 = export_results_2(data2, order, vp, nb_turn, agents)
 
+        # Reset agent historical for next debate orders
+        for a in agent_order:
+            a.historical = dict()
     
-    
-    
+    # Create csv files
     df = pd.DataFrame(exported_data)
     df.to_csv("results/"+ debate_results +"/data.csv", index=False)
-    print(exported_data2)
+
     df2 = pd.DataFrame(exported_data2)
     df2.to_csv("results/"+ debate_results +"/data2.csv", index=False)
+
+
 def replay_debate(debate_path: str) -> None:
     """
     Replays the debate with the given debate number.
@@ -179,16 +181,18 @@ def replay_debate(debate_path: str) -> None:
     Returns:
         None
     """
+
     if not os.path.exists(debate_path):
         print(f"The file {debate_path} does not exist.")
         return None
     
+    # Create replays folder
     early_path="replays/"
-    print(debate_path.split("/"))
-    debate_path_last=debate_path.split("/")[len(debate_path.split("/"))-1]
     if not os.path.exists(early_path):
         os.mkdir(early_path)
 
+    # Create new sub folder
+    debate_path_last = debate_path.split("/")[len(debate_path.split("/"))-1]
     if not os.path.exists(early_path+debate_path_last+".1"):
         os.mkdir(early_path+debate_path_last+".1")
         folder_name = debate_path_last+".1"
@@ -214,18 +218,21 @@ def replay_debate(debate_path: str) -> None:
         numberOfAgents = len(first_column_value.split(","))
 
     export_apx(folder_name, f"univers_graph", UG, early_path)
-    agents=[]
-    
+
+    # Initialize agent list and their opinion graph
+    agents = []
     for i in range(int(numberOfAgents)):
         new = f"{debate_path}/opinion_graph_{i}.apx"
-        agents.append(agent(i,read_UG_from_apx(new),UG))
+        agents.append(agent(i, read_UG_from_apx(new), UG))
         export_apx(folder_name, f"opinion_graph_{i}", agents[i].OG, early_path="replays/")
 
+    # Initialize csv columns
+    data = {"order":[], "Vp":[], "numberOfTurn":[]}
+
     j = 0
-    data={"order":[], "Vp":[], "numberOfTurn":[]}
     for a in agents:
-            data[a.get_number()]=[]
-            j+=1
+        data[a.get_number()] = []
+        j += 1
     
     combinations = find_all_combinations(agents)
 
@@ -238,22 +245,33 @@ def replay_debate(debate_path: str) -> None:
         export_apx(folder_name, order, public_graph,early_path="replays/")
         data = export_results(data, public_graph, order, vp, nb_turn, agents)
     
+    # Create csv file
     df = pd.DataFrame(data)
     df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
 
 def replay_combination(debate_path: str, combination: str) -> None:
-    early_path = "replays/"
+    """
+    Replay a debate based on a specific combination of agents.
+
+    Parameters:
+        debate_path (str): The path to the debate folder containing necessary files.
+        combination (str): The combination of agent numbers separated by commas.
+
+    Returns:
+        None: This function doesn't return anything but replays the debate and saves results.
+    """
 
     if not os.path.exists(debate_path):
         print(f"The file {debate_path} does not exist.")
         return None
     
+    # Create replays folder
     early_path="replays/"
-    print(debate_path.split("/"))
-    debate_path_last=debate_path.split("/")[len(debate_path.split("/"))-1]
     if not os.path.exists(early_path):
         os.mkdir(early_path)
 
+    # Create new sub folder
+    debate_path_last=debate_path.split("/")[len(debate_path.split("/"))-1]
     if not os.path.exists(early_path+debate_path_last+".1"):
         os.mkdir(early_path+debate_path_last+".1")
         folder_name = debate_path_last+".1"
@@ -265,6 +283,7 @@ def replay_combination(debate_path: str, combination: str) -> None:
         new_val = last_subfolder + 1
         os.mkdir(early_path+f"/{debate_path_last}.{new_val}")
         folder_name = f"/{debate_path_last}.{new_val}"
+
     # Create the right subfolder where to put results    
     UG = read_UG_from_apx(debate_path+"/universe_graph.apx")
     csv_path = (debate_path+"/data.csv")
@@ -278,32 +297,32 @@ def replay_combination(debate_path: str, combination: str) -> None:
         numberOfAgents = len(first_column_value.split(","))
 
     export_apx(folder_name, f"univers_graph", UG, early_path="replays/")
-    agents=[]
-    
+
+    # Initialize agent list
+    agents = []
     for i in range(int(numberOfAgents)) :
         new = f"{debate_path}/opinion_graph_{i}.apx"
-        agents.append(agent(i,read_UG_from_apx(new),UG))
+        agents.append(agent(i,read_UG_from_apx(new), UG))
         export_apx(folder_name, f"opinion_graph_{i}", agents[i].OG, early_path="replays/")
 
+    # Initialize csv file
     j = 0
-    data={"order":[], "Vp":[], "numberOfTurn":[]}
+    data = {"order":[], "Vp":[], "numberOfTurn":[]}
     for a in agents:
-            data[a.get_number()]=[]
-            j+=1
+        data[a.get_number()] = []
+        j += 1
     
     combinations = find_all_combinations(agents)
+
     # Find the right combination to replay
     agent_order = ""
-    for i in combinations:
+    for comb in combinations:
         word = ""
-        for j in i :
-            print(j.get_number())
+        for j in comb :
             number=f"{j.get_number()}"
             word += ","+number
-        print(word)
         if(word[1:len(word)]==combination):
-            print(word[1:len(word)])
-            agent_order=i
+            agent_order = comb
     
     vp, public_graph, order, agents, nb_turn = run_protocol(UG, agent_order)
 
@@ -311,40 +330,83 @@ def replay_combination(debate_path: str, combination: str) -> None:
     export_apx(folder_name, order, public_graph, early_path="replays/")
     exported_data = export_results(data, public_graph, order, vp, nb_turn, agents)
     
+    # Create csv file
     df = pd.DataFrame(exported_data)
     df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
 
 def export_results(data, public_graph, order, vp, nb_turn, agents) -> dict:
+    """
+    Export the results of the debate including order, Vp, number of turns, and agent historical data into a dictionary for dataframe.
+
+    Parameters:
+        data (dict): The dictionary containing the results data.
+        public_graph (dict): The public opinion graph after the debate.
+        order (str): The order in which the agents participated in the debate.
+        vp (str): The winner of the debate.
+        nb_turn (int): The total number of turns in the debate.
+        agents (List[Agent]): A list of Agent objects representing participants in the debate.
+
+    Returns:
+        dict: A dictionary containing the updated results data.
+
+    Notes:
+        - The historical data of each agent is appended to the results data.
+        - The historical data includes the agent's name, comfort zone status, and historical actions.
+    """
 
     data["order"].append(order)
     data["Vp"].append(vp)
     data["numberOfTurn"].append(nb_turn)
+
+    # Append historical data of each agent to data dictionary
     for a in agents:
-        historic_data = []
-        historic_data.append(a.name)
-        historic_data.append(a.in_comfort_zone(public_graph))
-        historic_data.append(a.historic)
-        data[a.get_number()].append(historic_data)
-        a.historic = dict()
+        historical_data = []
+        historical_data.append(a.name)
+        historical_data.append(a.in_comfort_zone(public_graph))
+        historical_data.append(a.historical)
+        data[a.get_number()].append(historical_data)
+
     return data
 
-def export_results_2(data, public_graph, order, vp, nb_turn, agents,j) -> dict:
+def export_results_2(data, order, vp, nb_turn, agents) -> dict:
+    """
+    Export the detailed results of the debate including order, Vp, number of turns, and agent historical data for each turn.
+
+    Parameters:
+        data (dict): The dictionary containing the results data.
+        order (str): The order in which the agents participated in the debate.
+        vp (str): The winner of the debate.
+        nb_turn (int): The total number of turns in the debate.
+        agents (List[Agent]): A list of Agent objects representing participants in the debate.
+
+    Returns:
+        dict: A dictionary containing the updated results data.
+
+    Notes:
+        - Each turn's historical data for all agents is appended to the results data.
+        - The historical data includes the agent's name and actions for each turn.
+        - The turns are indexed starting from 0.
+    """
 
     data["order"].append(order)
     data["Vp"].append(vp)
     data["numberOfTurn"].append(nb_turn)
-    l = 0
-    all_turn=dict()
-    print(nb_turn)
+
+    # Create a dictionary to store historical data for all turns
+    all_turn = dict()
+
     for i in range(nb_turn):
-        turn=[]
-        dicto=dict()
+        turn = []
+        dic = dict()
+
+        # Gather historical data for each agent for the current turn
         for a in agents:
-            print(a.name)
-            print(a.historic)
-            dicto[a.name]=a.historic[i+1]
-        turn.append(dicto)
-        all_turn[f"turn {i}"]=turn
-    data["all tour"].append(all_turn)
-    print(all_turn)
+            dic[a.name] = a.historical[i+1]
+
+        turn.append(dic)
+        all_turn[f"turn {i}"] = turn
+
+    # Append turn history to data dictionary
+    data["turnHistory"].append(all_turn)
+
     return data
