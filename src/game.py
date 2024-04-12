@@ -193,17 +193,17 @@ def replay_debate(debate_path: str) -> None:
 
     # Create new sub folder
     debate_path_last = debate_path.split("/")[len(debate_path.split("/"))-1]
-    if not os.path.exists(early_path+debate_path_last+".1"):
-        os.mkdir(early_path+debate_path_last+".1")
-        folder_name = debate_path_last+".1"
+    if not os.path.exists(early_path+debate_path_last+"-1"):
+        os.mkdir(early_path+debate_path_last+"-1")
+        folder_name = debate_path_last+"-1"
     else :
         last_subfolder = 1
         for sub_folder in (glob.glob(r'replays\*')) :
-            if(last_subfolder < int((sub_folder.split("\\"))[1].split(".")[1])):
-                last_subfolder = int((sub_folder.split("\\"))[1].split(".")[1])
+            if(last_subfolder < int((sub_folder.split("\\"))[1].split("-")[1])):
+                last_subfolder = int((sub_folder.split("\\"))[1].split("-")[1])
         new_val = last_subfolder + 1
-        os.mkdir(early_path+f"/{debate_path_last}.{new_val}")
-        folder_name = f"/{debate_path_last}.{new_val}"
+        os.mkdir(early_path+f"/{debate_path_last}-{new_val}")
+        folder_name = f"/{debate_path_last}-{new_val}"
         
     # Create the right subfolder where to put results    
     UG = read_UG_from_apx(debate_path+"/universe_graph.apx")
@@ -217,7 +217,7 @@ def replay_debate(debate_path: str) -> None:
         first_column_value = second_row[0]
         numberOfAgents = len(first_column_value.split(","))
 
-    export_apx(folder_name, f"univers_graph", UG, early_path)
+    export_apx(folder_name, "univers_graph", UG, early_path)
 
     # Initialize agent list and their opinion graph
     agents = []
@@ -272,14 +272,14 @@ def replay_combination(debate_path: str, combination: str) -> None:
 
     # Create new sub folder
     debate_path_last=debate_path.split("/")[len(debate_path.split("/"))-1]
-    if not os.path.exists(early_path+debate_path_last+".1"):
-        os.mkdir(early_path+debate_path_last+".1")
-        folder_name = debate_path_last+".1"
+    if not os.path.exists(early_path+debate_path_last+"-1"):
+        os.mkdir(early_path+debate_path_last+"-1")
+        folder_name = debate_path_last+"-1"
     else :
         last_subfolder = 1
         for sub_folder in (glob.glob(r'replays\*')) :
-            if(last_subfolder < int((sub_folder.split("\\"))[1].split(".")[1])):
-                last_subfolder = int((sub_folder.split("\\"))[1].split(".")[1])
+            if(last_subfolder < int((sub_folder.split("\\"))[1].split("-")[1])):
+                last_subfolder = int((sub_folder.split("\\"))[1].split("-")[1])
         new_val = last_subfolder + 1
         os.mkdir(early_path+f"/{debate_path_last}.{new_val}")
         folder_name = f"/{debate_path_last}.{new_val}"
