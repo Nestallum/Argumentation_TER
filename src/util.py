@@ -112,7 +112,9 @@ def auto_generate_OG(UG: dict) -> dict:
     args.remove('0')
 
     # Randomly pick a number of args to add for our OG.
-    nb_args_to_add = random.randint(1, len(args))
+    min_bound = len(args)//4
+    max_bound = len(args)
+    nb_args_to_add = random.randint(min_bound, max_bound)
 
     # Choose random arguments to add to the subgraph.
     selected_args = random.sample(args, nb_args_to_add)
