@@ -62,24 +62,24 @@ def run_protocol(UG, agents) -> float | dict:
 
     # Run the debate until no arguments are presented in a turn.
     while(PG != previous_PG):
-        print("\n" + "-"*60)
+        
         nb_turn += 1
         previous_PG = PG
 
-        print(f"\n* TURN NUMBER {nb_turn}:")
+        
 
         # Iterate through each agent to make their move.
         for k in range(number_of_agents):
-            print(f"\n{'- Turn of ' + agents[k].name + ' :':^40}")
+            
             PG = agents[k].best_next_move(PG, UG, nb_turn)
 
     for k in range(number_of_agents):
         historical.append(agents[k].historical)
 
     # Debate conclusion.
-    print("\nSince none of the agents presented any arguments throughout an entire turn, the debate concludes.")
+    
     final_Vp = Hbs(PG, "0")
-    print(f"final value of the issue Vp : {final_Vp}\n")
+    
     
     agent_names = []
     for a in agents:     
@@ -183,7 +183,7 @@ def replay_debate(debate_path: str) -> None:
     """
 
     if not os.path.exists(debate_path):
-        print(f"The file {debate_path} does not exist.")
+        
         return None
     
     # Create replays folder
@@ -261,7 +261,7 @@ def replay_debate_just_with_UG(debate_path: str,number_agents) -> None:
     """
 
     if not os.path.exists(debate_path):
-        print(f"The file {debate_path} does not exist.")
+        
         return None
     
     # Create replays folder
@@ -330,7 +330,7 @@ def replay_combination(debate_path: str, combination: str) -> None:
     """
 
     if not os.path.exists(debate_path):
-        print(f"The file {debate_path} does not exist.")
+        
         return None
     
     # Create replays folder

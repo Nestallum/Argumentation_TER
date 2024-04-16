@@ -97,25 +97,25 @@ class agent :
             dict: The updated public graph after making the best move.
         """
 
-        print(f"\nCurrent value of OG: {self.get_Vk()}")
+        
 
         Vp = Hbs(PG, "0")
-        print(f"Current value of PG: {Vp}")
+        
         
         # Already in comfort zone, plays nothing.
         if(self.in_comfort_zone(PG)):
-            print(f"{self.name} is in its comfort zone. No need to play an argument.")
+            
             self.historical[turn] = None
             return PG
         
         # Else, find the best argument to play.
-        print(f"{self.name} is not in its comfort zone.")
+        
 
         possible_moves = self.get_possible_next_moves(PG,UG)
 
         # If there is no argument to play.
         if(len(possible_moves) == 0):
-            print("No playable moves, no addition.")
+            
             self.historical[turn] = None
             return PG
         
@@ -137,7 +137,7 @@ class agent :
         
         # If no argument brings him closer to his comfort zone.
         if(arg_to_play == None):
-            print("No good arguments, no addition.")
+            
             self.historical[turn] = None
             return PG
         
@@ -146,11 +146,11 @@ class agent :
         arguments.append(arg_to_play)
         self.historical[turn] = arg_to_play
         
-        # Final prints
-        print(f"{self.name} adds argument {arg_to_play} to the public graph.")
+        
+        
         new_PG = generate_subgraph(UG, arguments)
         new_Vp = Hbs(new_PG, "0")
-        print(f"Vp of public graph now: {new_Vp}")
+        
         
         # Generate new PG
         return new_PG
