@@ -192,3 +192,27 @@ def Hbs(graph: dict, argument: str) -> float:
     # Return the harmony score for the specified argument
     return prev_steps[argument][step]
 
+def Hbs2(graph: dict, argument: str) -> float:
+    """ 
+    Calculates and returns the Belief Strength (Hbs) of an argument.
+
+    Args:
+        graph (dict): The graph represented as a dictionary.
+        argument (str): The argument for which to calculate the Belief Strength (Hbs).
+
+    Returns:
+        float: The Belief Strength (Hbs) of the argument.
+    """
+    
+    # If nobody attacks the argument, the value is of its Hbs is 1.
+    if len(graph[argument]) == 0: 
+        return 1
+    
+    else:
+        # Sum the Belief Strengths (Hbs) of all attacking arguments.
+        total_hbs = 0                  
+        for a in range(len(graph[argument])):
+            total_hbs += Hbs(graph, graph[argument][a])
+            
+        # Calculate and return the Belief Strength (Hbs) of the argument.
+        return 1 / (1 + total_hbs)
