@@ -155,7 +155,7 @@ def generate_debate(numberOfAgents: int) -> None:
         vp, public_graph, order, agents, nb_turn = run_protocol(universe_graph, agent_order)
 
         # Export results in apx and csv
-        export_apx(debate_results, order, public_graph)
+        
         exported_data = export_results(data, public_graph, order, vp, nb_turn, agents)
         exported_data2 = export_results_2(data2, order, vp, nb_turn, agents)
 
@@ -170,7 +170,65 @@ def generate_debate(numberOfAgents: int) -> None:
     df2 = pd.DataFrame(exported_data2)
     df2.to_csv("results/"+ debate_results +"/data2.csv", index=False)
 
+def generate_debate_lent(numberOfAgents: int) -> None:
+    """
+    Generate a debate based on the given number of agents.
 
+    Args:
+        numberOfAgents (int): The number of agents participating in the debate.
+
+    Returns:
+        None
+    """
+
+    # Generate the debate graph as a networkx.classes.digraph.DiGraph
+    generated_graph = debate_graph_generation()
+    
+    # Export the networkx.classes.digraph.DiGraph to an APX file into a subfolder of the results folder and returns it
+    debate_results = export_apx_UG("universe_graph", generated_graph)
+
+    # Read the universe graph from the APX file
+    universe_graph = read_UG_from_apx("results/"+ debate_results +"/universe_graph.apx")
+    
+    # Initialize agents with the universe graph
+    number_of_agents = numberOfAgents
+    agents = initialize_agents(universe_graph, number_of_agents)
+    
+    # Generate all agent order combinations
+    agent_combinations = agent_order_combinations(agents)
+
+    # Initialize csv columns
+    data = {"order":[], "Vp":[], "numberOfTurn":[]}
+
+    j = 0
+    for a in agents:
+        export_apx(debate_results, f"opinion_graph_{j}", a.OG)
+        data[a.get_number()] = []
+        j += 1
+
+    # Data for csv2
+    data2 = {"order":[], "Vp":[], "numberOfTurn":[], "turnHistory":[]}
+
+    # Run the protocol for each agent order combination
+    for agent_order in agent_combinations:
+        
+        vp, public_graph, order, agents, nb_turn = run_protocol(universe_graph, agent_order)
+
+        # Export results in apx and csv
+        export_apx(debate_results, order, public_graph)
+        exported_data = export_results(data, public_graph, order, vp, nb_turn, agents)
+        exported_data2 = export_results_2(data2, order, vp, nb_turn, agents)
+
+        # Reset agent historical for next debate orders
+        for a in agent_order:
+            a.historical = dict()
+    
+    # Create csv files
+    df = pd.DataFrame(exported_data)
+    df.to_csv("results/"+ debate_results +"/data.csv", index=False)
+
+    df2 = pd.DataFrame(exported_data2)
+    df2.to_csv("results/"+ debate_results +"/data2.csv", index=False)
 def replay_debate(debate_path: str) -> None:
     """
     Replays the debate with the given debate number.
@@ -199,7 +257,7 @@ def replay_debate(debate_path: str) -> None:
     else :
         last_subfolder = 1
         for sub_folder in (glob.glob(r'replays\*')) :
-            if(last_subfolder < int((sub_folder.split("\\"))[1].split("-")[1])):
+            if(last_subfolder < int((sub_folder.split("\\"))[1].split("-")[1]) and (debate_path_last in sub_folder)):
                 last_subfolder = int((sub_folder.split("\\"))[1].split("-")[1])
         new_val = last_subfolder + 1
         os.mkdir(early_path+f"/{debate_path_last}-{new_val}")
@@ -235,7 +293,7 @@ def replay_debate(debate_path: str) -> None:
         j += 1
     
     combinations = find_all_combinations(agents)
-
+    data2 = {"order":[], "Vp":[], "numberOfTurn":[], "turnHistory":[]}
     # Run the protocol for each agent order combination
     for agent_order in combinations:
         
@@ -244,10 +302,16 @@ def replay_debate(debate_path: str) -> None:
         # Export results in apx and csv
         export_apx(folder_name, order, public_graph,early_path="replays/")
         data = export_results(data, public_graph, order, vp, nb_turn, agents)
+        exported_data2 = export_results_2(data2, order, vp, nb_turn, agents)
+        for a in agent_order:
+            a.historical = dict()
     
     # Create csv file
     df = pd.DataFrame(data)
     df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
+    
+    df2 = pd.DataFrame(exported_data2)
+    df2.to_csv("replays/"+ folder_name +"/data2.csv", index=False)
 
 def replay_debate_just_with_UG(debate_path: str,number_agents) -> None:
     """
@@ -277,7 +341,7 @@ def replay_debate_just_with_UG(debate_path: str,number_agents) -> None:
     else :
         last_subfolder = 1
         for sub_folder in (glob.glob(r'replays\*')) :
-            if(last_subfolder < int((sub_folder.split("\\"))[1].split("-")[1])):
+            if(last_subfolder < int((sub_folder.split("\\"))[1].split("-")[1]) and (debate_path_last in sub_folder)):
                 last_subfolder = int((sub_folder.split("\\"))[1].split("-")[1])
         new_val = last_subfolder + 1
         os.mkdir(early_path+f"/{debate_path_last}-{new_val}")
@@ -303,7 +367,7 @@ def replay_debate_just_with_UG(debate_path: str,number_agents) -> None:
         j += 1
     
     combinations = find_all_combinations(agents)
-
+    data2 = {"order":[], "Vp":[], "numberOfTurn":[], "turnHistory":[]}
     # Run the protocol for each agent order combination
     for agent_order in combinations:
         
@@ -312,10 +376,16 @@ def replay_debate_just_with_UG(debate_path: str,number_agents) -> None:
         # Export results in apx and csv
         export_apx(folder_name, order, public_graph,early_path="replays/")
         data = export_results(data, public_graph, order, vp, nb_turn, agents)
+        exported_data2 = export_results_2(data2, order, vp, nb_turn, agents)
+        for a in agent_order:
+            a.historical = dict()
     
     # Create csv file
     df = pd.DataFrame(data)
     df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
+    
+    df2 = pd.DataFrame(exported_data2)
+    df2.to_csv("replays/"+ folder_name +"/data2.csv", index=False)
     
 def replay_combination(debate_path: str, combination: str) -> None:
     """
@@ -346,7 +416,7 @@ def replay_combination(debate_path: str, combination: str) -> None:
     else :
         last_subfolder = 1
         for sub_folder in (glob.glob(r'replays\*')) :
-            if(last_subfolder < int((sub_folder.split("\\"))[1].split("-")[1])):
+            if(last_subfolder < int((sub_folder.split("\\"))[1].split("-")[1]) and (debate_path_last in sub_folder)):
                 last_subfolder = int((sub_folder.split("\\"))[1].split("-")[1])
         new_val = last_subfolder + 1
         os.mkdir(early_path+f"/{debate_path_last}.{new_val}")
@@ -393,15 +463,18 @@ def replay_combination(debate_path: str, combination: str) -> None:
             agent_order = comb
     
     vp, public_graph, order, agents, nb_turn = run_protocol(UG, agent_order)
-
+    data2 = {"order":[], "Vp":[], "numberOfTurn":[], "turnHistory":[]}
     # Export results in apx and csv
     export_apx(folder_name, order, public_graph, early_path="replays/")
     exported_data = export_results(data, public_graph, order, vp, nb_turn, agents)
+    exported_data2 = export_results_2(data2, order, vp, nb_turn, agents)
     
     # Create csv file
     df = pd.DataFrame(exported_data)
     df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
 
+    df2 = pd.DataFrame(exported_data2)
+    df2.to_csv("replays/"+ folder_name +"/data2.csv", index=False)
 def export_results(data, public_graph, order, vp, nb_turn, agents) -> dict:
     """
     Export the results of the debate including order, Vp, number of turns, and agent historical data into a dictionary for dataframe.
