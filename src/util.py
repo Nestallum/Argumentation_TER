@@ -88,7 +88,7 @@ def generate_subgraph(UG: dict, arguments: list) -> dict:
     for arg in arguments:
         # Find the common arguments (intersection) between the specified arguments and the arguments in UG[arg].
         common_args = list(set(arguments) & set(UG[arg]))
-        OG[arg] = common_args
+        OG[arg] = sorted(common_args)
 
     return OG
 

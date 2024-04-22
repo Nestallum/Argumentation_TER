@@ -155,7 +155,7 @@ def generate_debate(numberOfAgents: int) -> None:
         vp, public_graph, order, agents, nb_turn = run_protocol(universe_graph, agent_order)
 
         # Export results in apx and csv
-        
+        export_apx(debate_results, order, public_graph)
         exported_data = export_results(data, public_graph, order, vp, nb_turn, agents)
         exported_data2 = export_results_2(data2, order, vp, nb_turn, agents)
 
@@ -165,10 +165,16 @@ def generate_debate(numberOfAgents: int) -> None:
     
     # Create csv files
     df = pd.DataFrame(exported_data)
-    df.to_csv("results/"+ debate_results +"/data.csv", index=False)
+    print(debate_results)
+    number=debate_results.split("_")[1]
+    if not os.path.exists("csv"):
+        os.mkdir("csv")
+    if not os.path.exists("csv2"):
+        os.mkdir("csv2")
+    df.to_csv(f"csv/data{number}.csv", index=False)
 
     df2 = pd.DataFrame(exported_data2)
-    df2.to_csv("results/"+ debate_results +"/data2.csv", index=False)
+    df2.to_csv(f"csv2/data{number}_2.csv", index=False)
 
 def generate_debate_lent(numberOfAgents: int) -> None:
     """
