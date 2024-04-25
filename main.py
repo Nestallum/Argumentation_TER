@@ -18,12 +18,12 @@ def main():
         generate_debate(nb_agents)
     elif choice == 'R':
         debate_number = input("Path of the debate?: ")
-        choice_0 = input("Replay with just the Same UG Y/N ")
+        choice_0 = input("Replay with just the Same UG? (Y/N): ")
         if choice_0 == 'Y' :
             number=input("How many agents ? ")
             replay_debate_just_with_UG(debate_number,int(number))
         else :
-            choice = input("Replay all combinations of agent order? (Y/N)")
+            choice = input("Replay all combinations of agent order? (Y/N): ")
             if choice == 'Y': 
                 replay_debate(debate_number)
             elif choice == 'N':
