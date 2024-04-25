@@ -165,7 +165,7 @@ def generate_debate(numberOfAgents: int) -> None:
     
     # Create csv files
     df = pd.DataFrame(exported_data)
-    print(debate_results)
+    
     number=debate_results.split("_")[1]
     if not os.path.exists("csv"):
         os.mkdir("csv")
@@ -235,7 +235,7 @@ def generate_debate_lent(numberOfAgents: int) -> None:
 
     df2 = pd.DataFrame(exported_data2)
     df2.to_csv("results/"+ debate_results +"/data2.csv", index=False)
-def replay_debate(debate_path: str) -> None:
+def replay_debate(debate_path: str,numberOfAgents: int) -> None:
     """
     Replays the debate with the given debate number.
 
@@ -245,7 +245,7 @@ def replay_debate(debate_path: str) -> None:
     Returns:
         None
     """
-
+    new_val=1
     if not os.path.exists(debate_path):
         
         return None
@@ -269,19 +269,15 @@ def replay_debate(debate_path: str) -> None:
         os.mkdir(early_path+f"/{debate_path_last}-{new_val}")
         folder_name = f"/{debate_path_last}-{new_val}"
         
-    # Create the right subfolder where to put results    
+    # Create the right subfolder where to put results
+      
     UG = read_UG_from_apx(debate_path+"/universe_graph.apx")
     csv_path = (debate_path+"/data.csv")
 
     # Open CSV file to get the right number of agents to replay the debate.
-    with open(csv_path, newline='') as csvfile:
-        reader = csv.reader(csvfile)
-        next(reader)
-        second_row = next(reader)
-        first_column_value = second_row[0]
-        numberOfAgents = len(first_column_value.split(","))
+    
 
-    export_apx(folder_name, "univers_graph", UG, early_path)
+    export_apx(folder_name, "universe_graph", UG, early_path)
 
     # Initialize agent list and their opinion graph
     agents = []
@@ -312,13 +308,17 @@ def replay_debate(debate_path: str) -> None:
         for a in agent_order:
             a.historical = dict()
     
-    # Create csv file
     df = pd.DataFrame(data)
-    df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
-    
-    df2 = pd.DataFrame(exported_data2)
-    df2.to_csv("replays/"+ folder_name +"/data2.csv", index=False)
+   
+    if not os.path.exists("csv"):
+        os.mkdir("csv")
+    if not os.path.exists("csv2"):
+        os.mkdir("csv2")
+    df.to_csv(f"csv/data{new_val-1}.csv", index=False)
 
+    df2 = pd.DataFrame(exported_data2)
+    df2.to_csv(f"csv2/data{new_val-1}_2.csv", index=False)
+    
 def replay_debate_just_with_UG(debate_path: str,number_agents) -> None:
     """
     Replays the debate with the given debate number.
@@ -329,7 +329,7 @@ def replay_debate_just_with_UG(debate_path: str,number_agents) -> None:
     Returns:
         None
     """
-
+    new_val=1
     if not os.path.exists(debate_path):
         
         return None
@@ -378,7 +378,7 @@ def replay_debate_just_with_UG(debate_path: str,number_agents) -> None:
     for agent_order in combinations:
         
         vp, public_graph, order, agents, nb_turn = run_protocol(UG, agent_order)
-
+        
         # Export results in apx and csv
         export_apx(folder_name, order, public_graph,early_path="replays/")
         data = export_results(data, public_graph, order, vp, nb_turn, agents)
@@ -386,12 +386,19 @@ def replay_debate_just_with_UG(debate_path: str,number_agents) -> None:
         for a in agent_order:
             a.historical = dict()
     
-    # Create csv file
-    df = pd.DataFrame(data)
-    df.to_csv("replays/"+ folder_name +"/data.csv", index=False)
     
+    df = pd.DataFrame(data)
+    
+    
+    
+    if not os.path.exists("csv_ug"):
+        os.mkdir("csv_ug")
+    if not os.path.exists("csv_ug_2"):
+        os.mkdir("csv_ug_2")
+    df.to_csv(f"csv_ug/data{new_val-1}.csv", index=False)
+
     df2 = pd.DataFrame(exported_data2)
-    df2.to_csv("replays/"+ folder_name +"/data2.csv", index=False)
+    df2.to_csv(f"csv_ug_2/data{new_val-1}_2.csv", index=False)
     
 def replay_combination(debate_path: str, combination: str) -> None:
     """
@@ -511,6 +518,14 @@ def export_results(data, public_graph, order, vp, nb_turn, agents) -> dict:
         historical_data.append(a.name)
         historical_data.append(a.in_comfort_zone(public_graph))
         historical_data.append(a.historical)
+        j=0
+        for i in a.historical.values() :
+            if i!=None :
+                j=j+1
+        
+        historical_data.append(j)
+        historical_data.append(a.nbArg)
+        historical_data.append(a.nbAtt)
         data[a.get_number()].append(historical_data)
 
     return data
