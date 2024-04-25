@@ -4,3 +4,7 @@ __pycache__/
 # Ignore the "results" directory and its contents
 results/
 replays/
+csv/
+csv_ug/
+csv_ug_2/
+csv2/
