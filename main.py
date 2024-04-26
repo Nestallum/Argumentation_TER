@@ -12,10 +12,11 @@ Date of Creation: 20/03/2024
 from src.game import *
 
 def main():
-    generate_debate(1)
-    for i in range(2,9):
-        for j in range(20):
-            replay_debate_just_with_UG("results/debate_1",i)
+    generate_debate(6)
+    # replay_debate("results/debate_2", 1)
+    # for agent in range(2,9):
+    #     for _ in range(4):
+    #         replay_debate_just_with_UG("results/debate_1", agent)
             
     
     

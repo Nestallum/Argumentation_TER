@@ -1,3 +1,0 @@
-order,Vp,numberOfTurn,turnHistory
-"A0,A1",0.14285714285714285,5,"{'turn 0': [{'agent_0': '1', 'agent_1': '10'}], 'turn 1': [{'agent_0': '11', 'agent_1': '12'}], 'turn 2': [{'agent_0': None, 'agent_1': '13'}], 'turn 3': [{'agent_0': None, 'agent_1': '14'}], 'turn 4': [{'agent_0': None, 'agent_1': None}]}"
-"A1,A0",0.14285714285714285,5,"{'turn 0': [{'agent_1': '10', 'agent_0': '1'}], 'turn 1': [{'agent_1': '12', 'agent_0': '11'}], 'turn 2': [{'agent_1': '13', 'agent_0': None}], 'turn 3': [{'agent_1': '14', 'agent_0': None}], 'turn 4': [{'agent_1': None, 'agent_0': None}]}"

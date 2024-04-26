@@ -1,4 +1,4 @@
-# agent.py
+# src/agent.py
 
 """
 This Python script contains a class representing an agent in an argumentation context, along with utility methods for processing and analyzing debate data.
