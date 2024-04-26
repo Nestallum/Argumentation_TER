@@ -1,4 +1,4 @@
-# agent.py
+# src/agent.py
 
 """
 This Python script contains a class representing an agent in an argumentation context, along with utility methods for processing and analyzing debate data.
@@ -27,6 +27,8 @@ class agent :
         self.OG = OG
         self.Vk = Hbs(OG, "0") # Value of the agent’s opinion (value of the issue in the agent’s sub-graph).
         self.cl = cl
+        self.nbArg = len(self.OG.values())
+        self.nbAtt = self.get_nb_att()
         self.attackers_adjacency_list = build_attackers_adjacency_list(OG, UG) # List of attackers.
         self.historical = dict()
         
@@ -39,6 +41,12 @@ class agent :
             """
             
         return self.Vk
+    def get_nb_att(self) -> float:
+        j=0
+        for i in self.OG.values():
+            j=j+len(i)
+            
+        return j
     
     def get_number(self):
         return int(self.name.split("_")[1])
