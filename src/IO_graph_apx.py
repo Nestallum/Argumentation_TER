@@ -1,4 +1,4 @@
-# graph_from_apx.py
+# src/graph_from_apx.py
 
 """
 This Python script reads a .apx file and creates the associated graph.
@@ -124,12 +124,12 @@ def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph', ear
                     
     return folder_name
 
-def export_apx(folder_name: str, file_name: str, graph: dict, early_path="results/") -> None:
+def export_apx(folder_path_name: str, file_name: str, graph: dict) -> None:
     """
     Writes the graph represented as a directed grap to a file in the specified folder with the given file name.
 
     Args:
-        folder_name (str): The name of the folder where the file will be saved.
+        path_name (str): The name of the path where the file will be saved.
         file_name (str): The name of the file to write the graph to.
         graph (dict): The graph represented as a directed graph (DiGraph).
 
@@ -138,8 +138,7 @@ def export_apx(folder_name: str, file_name: str, graph: dict, early_path="result
     """
 
     extension = ".apx"
-    debate_path = early_path + folder_name + "/"
-    path = debate_path + file_name + extension
+    path = folder_path_name + "/" + file_name + extension
     
     if os.path.exists(path):
         print(f"You cannot write (export) into the file {file_name}{extension} because it already exists and contains a graph.")
