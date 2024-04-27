@@ -1,3 +1,0 @@
-order,Vp,numberOfTurn,0,1
-"A0,A1",0.25,3,"['agent_0', True, {1: '1', 2: '3', 3: None}, 2, 18, 13]","['agent_1', True, {1: '12', 2: None, 3: None}, 1, 22, 9]"
-"A1,A0",0.25,3,"['agent_0', True, {1: '1', 2: None, 3: None}, 1, 18, 13]","['agent_1', True, {1: '12', 2: '14', 3: None}, 2, 22, 9]"

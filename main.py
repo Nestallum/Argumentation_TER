@@ -13,9 +13,10 @@ from src.game import *
 
 def main():
     generate_debate(1)
-    for i in range(2,9):
+    for i in range(2,8):
         for j in range(20):
             replay_debate_just_with_UG("results/debate_1",i)
+            
             
     
     

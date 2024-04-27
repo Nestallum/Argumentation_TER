@@ -1,3 +1,0 @@
-order,Vp,numberOfTurn,turnHistory
-"A0,A1",0.2,3,"{'turn 0': [{'agent_0': '12', 'agent_1': '1'}], 'turn 1': [{'agent_0': '13', 'agent_1': '14'}], 'turn 2': [{'agent_0': None, 'agent_1': None}]}"
-"A1,A0",0.2,3,"{'turn 0': [{'agent_1': '1', 'agent_0': '12'}], 'turn 1': [{'agent_1': '14', 'agent_0': '13'}], 'turn 2': [{'agent_1': None, 'agent_0': None}]}"
