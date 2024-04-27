@@ -1,4 +1,4 @@
-# agent.py
+# src/agent.py
 
 """
 This Python script contains a class representing an agent in an argumentation context, along with utility methods for processing and analyzing debate data.
@@ -105,19 +105,15 @@ class agent :
             dict: The updated public graph after making the best move.
         """
 
-        
-
         Vp = Hbs(PG, "0")
-        
-        
+                
         # Already in comfort zone, plays nothing.
         if(self.in_comfort_zone(PG)):
             
             self.historical[turn] = None
             return PG
         
-        # Else, find the best argument to play.
-        
+        # Else, find the best argument to play. 
 
         possible_moves = self.get_possible_next_moves(PG,UG)
 
@@ -145,7 +141,6 @@ class agent :
         
         # If no argument brings him closer to his comfort zone.
         if(arg_to_play == None):
-            
             self.historical[turn] = None
             return PG
         
@@ -154,11 +149,7 @@ class agent :
         arguments.append(arg_to_play)
         self.historical[turn] = arg_to_play
         
-        
-        
         new_PG = generate_subgraph(UG, arguments)
-        new_Vp = Hbs(new_PG, "0")
-        
         
         # Generate new PG
         return new_PG
