@@ -35,15 +35,15 @@ def get_command_args() -> str:
 
     return file_name
 
-def read_UG_from_apx(file_path: str) -> dict:
+def read_graph_from_apx(file_path: str) -> dict:
     """
-    Returns the Universe Graph (UG) read from the specified file as a dictionary.
+    Returns the Graph read from the specified file as a dictionary.
 
     Args:
         file_name (str): The name of the file containing the Universe Graph.
 
     Returns:
-        dict: The Universe Graph (UG) represented as a dictionary.
+        dict: The Graph represented as a dictionary.
         Key : attacked argument, Value : list of attacking arguments (may be empty).
     """
 
@@ -71,7 +71,7 @@ def read_UG_from_apx(file_path: str) -> dict:
                 
     return graph
 
-def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph', early_path="results/") -> None:
+def export_DiGraph_as_apx(file_name: str, graph: 'networkx.classes.digraph.DiGraph') -> None:
     """
     Writes the graph represented as a directed graph (DiGraph) to a file in the specified folder with the given file name.
 
@@ -85,13 +85,13 @@ def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph', ear
     """
 
     extension = ".apx"
+    folder = "results/"
+    if not os.path.exists(folder):
+        os.mkdir(folder)
 
-    if not os.path.exists(early_path):
-        os.mkdir(early_path)
-
-    if not os.path.exists(early_path+"/debate_1"):
-        os.mkdir(early_path+"/debate_1")
-        folder_name = "debate_1"
+    if not os.path.exists(folder+"/debate_1"):
+        os.mkdir(folder+"/debate_1")
+        debate_name = "debate_1"
 
     # Create the right subfolder where to put results    
     else :
@@ -100,18 +100,17 @@ def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph', ear
             if(last_subfolder < int((sub_folder.split("\\"))[1].split("_")[1])):
                 last_subfolder = int((sub_folder.split("\\"))[1].split("_")[1])
         new_val = last_subfolder + 1
-        os.mkdir(early_path+f"/debate_{new_val}")
-        folder_name = f"debate_{new_val}"
+        os.mkdir(folder+f"/debate_{new_val}")
+        debate_name = f"debate_{new_val}"
     
-    debate_path = early_path + folder_name + "/"
-    path = debate_path + file_name + extension
+    debate_path = folder + debate_name + "/" + file_name + extension
     
-    if os.path.exists(path):
+    if os.path.exists(debate_path):
         print(f"You cannot write (export) into the file {file_name}{extension} because it already exists and contains a graph.")
         sys.exit(1)
         
     # Create and fill the file
-    with open(path, 'w') as file:
+    with open(debate_path, 'w') as file:
         for arg in graph:
             # Write arguments.
             file.write("arg(" + str(arg) + ").\n")
@@ -122,11 +121,11 @@ def export_apx_UG(file_name: str, graph: 'networkx.classes.digraph.DiGraph', ear
                     # Fill with attack relations.
                     file.write("att(" + str(arg1) + "," + str(arg2) + ").\n")
                     
-    return folder_name
+    return debate_name
 
 def export_apx(folder_path_name: str, file_name: str, graph: dict) -> None:
     """
-    Writes the graph represented as a directed grap to a file in the specified folder with the given file name.
+    Writes the graph represented as a dictionary to a file in the specified folder with the given file name.
 
     Args:
         path_name (str): The name of the path where the file will be saved.

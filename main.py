@@ -14,10 +14,10 @@ from src.game import *
 def main():
 
     # generate_debate(6)
-    replay_debate("results/debate_2", 1)
-    # for agent in range(2,9):
-    #     for _ in range(4):
-    #         replay_debate_just_with_UG("results/debate_1", agent)
+    # replay_debate("results/debate_2", 6)
+    for agents in range(2,9):
+        for _ in range(4):
+          replay_debate_with_new_agents("results/debate_2", agents)
             
     
 if __name__ == "__main__":
