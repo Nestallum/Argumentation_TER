@@ -121,10 +121,10 @@ def generate_debate(numberOfAgents: int) -> None:
     generated_graph = debate_graph_generation()
     
     # Export the networkx.classes.digraph.DiGraph to an APX file into a subfolder of the results folder and returns it
-    debate_results_folder_name = export_apx_UG("universe_graph", generated_graph)
+    debate_results_folder_name = export_DiGraph_as_apx("universe_graph", generated_graph)
 
     # Read the universe graph from the APX file
-    universe_graph = read_UG_from_apx("results/"+ debate_results_folder_name +"/universe_graph.apx")
+    universe_graph = read_graph_from_apx("results/"+ debate_results_folder_name +"/universe_graph.apx")
     
     # Initialize agents with the universe graph
     number_of_agents = numberOfAgents
@@ -187,6 +187,7 @@ def replay_debate(debate_path: str, numberOfAgents: int) -> None:
 
     Args:
         debate_path (str): The path of the debate to replay.
+        numberOfAgents (int): The number of agents participating in the debate.
 
     Returns:
         None
@@ -215,18 +216,18 @@ def replay_debate(debate_path: str, numberOfAgents: int) -> None:
         os.mkdir(replays_folder+f"/{last_debate_name}-{new_val}")
         new_sub_folder = f"/{last_debate_name}-{new_val}"
         
-    # Create the right subfolder where to put results
+    # Get UG from the debate to replay.
     universe_graph_name = "universe_graph"
-    UG = read_UG_from_apx(debate_path+"/"+universe_graph_name+".apx")
+    UG = read_graph_from_apx(debate_path+"/"+universe_graph_name+".apx")
 
-    # Open CSV file to get the right number of agents to replay the debate.
+    # export UG as apx file in the replay path.
     export_apx(replays_folder+new_sub_folder, universe_graph_name, UG)
 
     # Initialize agent list and their opinion graph
     agents = []
     for i in range(int(numberOfAgents)):
-        new = f"{debate_path}/opinion_graph_{i}.apx"
-        agents.append(agent(i, read_UG_from_apx(new), UG))
+        opinion_graph_file = f"{debate_path}/opinion_graph_{i}.apx"
+        agents.append(agent(i, read_graph_from_apx(opinion_graph_file), UG))
         export_apx(replays_folder+new_sub_folder, f"opinion_graph_{i}", agents[i].OG)
 
     # Initialize csv columns
@@ -239,6 +240,7 @@ def replay_debate(debate_path: str, numberOfAgents: int) -> None:
     
     combinations = find_all_combinations(agents)
     data_2 = {"order":[], "Vp":[], "numberOfTurn":[], "turnHistory":[]}
+
     # Run the protocol for each agent order combination
     for agent_order in combinations:
         
@@ -270,18 +272,18 @@ def replay_debate(debate_path: str, numberOfAgents: int) -> None:
     df.to_csv(f"{csv_1_pathname}/{new_sub_folder}_data.csv", index=False)
     df2.to_csv(f"{csv_2_pathname}/{new_sub_folder}_data_2.csv", index=False)
     
-def replay_debate_just_with_UG(debate_path: str, number_agents) -> None:
+def replay_debate_with_new_agents(debate_path: str, number_agents) -> None:
     """
     Replays the debate with the given debate number.
 
     Args:
-        debate_number (int): The number of the debate to replay.
+        debate_path (str): The path of the debate to replay.
         number_agents (int): The number of agents.
 
     Returns:
         None
     """
-    new_val=1
+    new_val = 1
     if not os.path.exists(debate_path):
         print(f"The file {debate_path} does not exist.")
         sys.exit(1)
@@ -305,17 +307,17 @@ def replay_debate_just_with_UG(debate_path: str, number_agents) -> None:
         os.mkdir(replays_folder+f"/{last_debate_name}-{new_val}")
         new_sub_folder = f"/{last_debate_name}-{new_val}"
         
-    # Create the right subfolder where to put results    
-    UG = read_UG_from_apx(debate_path+"/universe_graph.apx")
-    csv_path = (debate_path+"/data.csv")
-    export_apx(new_sub_folder, "univers_graph", UG, replays_folder)
+    # Get UG from the debate to replay.   
+    UG = read_graph_from_apx(debate_path+"/universe_graph.apx")
+
+    # export UG as apx file in the replay path.
+    export_apx(replays_folder+new_sub_folder, "universe_graph", UG)
+
+    # Create a new agent list from the given UG.
     agents = initialize_agents(UG, number_agents)
-    i=0
-    for a in agents :
-        
-        new = f"{debate_path}/opinion_graph_{i}.apx"
-        export_apx(new_sub_folder, f"opinion_graph_{i}", agents[i].OG, replays_folder="replays/")
-        i=i+1
+    
+    for i in range(len(agents)) :
+        export_apx(replays_folder+new_sub_folder, f"opinion_graph_{i}", agents[i].OG)
     
     data = {"order":[], "Vp":[], "numberOfTurn":[]}
 
@@ -326,31 +328,37 @@ def replay_debate_just_with_UG(debate_path: str, number_agents) -> None:
     
     combinations = find_all_combinations(agents)
     data_2 = {"order":[], "Vp":[], "numberOfTurn":[], "turnHistory":[]}
+
     # Run the protocol for each agent order combination
     for agent_order in combinations:
         
         vp, public_graph, order, agents, nb_turn = run_protocol(UG, agent_order)
         
         # Export results in apx and csv
-        export_apx(new_sub_folder, order, public_graph,replays_folder="replays/")
+        export_apx(replays_folder+new_sub_folder, order, public_graph)
         data = export_results(data, public_graph, order, vp, nb_turn, agents)
         exported_data_2 = export_results_2(data_2, order, vp, nb_turn, agents)
         for a in agent_order:
             a.historical = dict()
     
-    
     df = pd.DataFrame(data)
-    
-    
-    
-    if not os.path.exists("csv_ug"):
-        os.mkdir("csv_ug")
-    if not os.path.exists("csv_ug_2"):
-        os.mkdir("csv_ug_2")
-    df.to_csv(f"csv_ug/data{new_val-1}.csv", index=False)
-
     df2 = pd.DataFrame(exported_data_2)
-    df2.to_csv(f"csv_ug_2/data{new_val-1}_2.csv", index=False)
+
+    # Main csv folder which will contain every other csv folders
+    csv_folder = "csv"
+    if not os.path.exists(csv_folder):
+        os.mkdir("csv")
+
+    # Subfolder for csv_1 and csv_2
+    csv_1_pathname = csv_folder + "/same_ug_new_agents_csv_1"
+    csv_2_pathname = csv_folder + "/same_ug_new_agents_csv_2"
+    if not os.path.exists(csv_1_pathname):
+        os.mkdir(csv_1_pathname)
+    if not os.path.exists(csv_2_pathname):
+        os.mkdir(csv_2_pathname)
+
+    df.to_csv(f"{csv_1_pathname}/{new_sub_folder}_data.csv", index=False)
+    df2.to_csv(f"{csv_2_pathname}/{new_sub_folder}_data_2.csv", index=False)
     
 def replay_combination(debate_path: str, combination: str) -> None:
     """
@@ -388,7 +396,7 @@ def replay_combination(debate_path: str, combination: str) -> None:
         new_sub_folder = f"/{last_debate_name}.{new_val}"
 
     # Create the right subfolder where to put results    
-    UG = read_UG_from_apx(debate_path+"/universe_graph.apx")
+    UG = read_graph_from_apx(debate_path+"/universe_graph.apx")
     csv_path = (debate_path+"/data.csv")
 
     # Open CSV file to get the right number of agents to replay the debate.
@@ -405,7 +413,7 @@ def replay_combination(debate_path: str, combination: str) -> None:
     agents = []
     for i in range(int(numberOfAgents)) :
         new = f"{debate_path}/opinion_graph_{i}.apx"
-        agents.append(agent(i,read_UG_from_apx(new), UG))
+        agents.append(agent(i,read_graph_from_apx(new), UG))
         export_apx(new_sub_folder, f"opinion_graph_{i}", agents[i].OG, replays_folder="replays/")
 
     # Initialize csv file
@@ -440,6 +448,7 @@ def replay_combination(debate_path: str, combination: str) -> None:
 
     df2 = pd.DataFrame(exported_data_2)
     df2.to_csv("replays/"+ new_sub_folder +"/data_2.csv", index=False)
+
 def export_results(data, public_graph, order, vp, nb_turn, agents) -> dict:
     """
     Export the results of the debate including order, Vp, number of turns, and agent historical data into a dictionary for dataframe.
