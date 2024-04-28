@@ -17,7 +17,7 @@ def main():
     # replay_debate("results/debate_2", 6)
     for agents in range(2,9):
         for _ in range(4):
-          replay_debate_with_new_agents("results/debate_1", agents)
+          replay_debate_with_new_agents("results/debate_2", agents)
             
     
 if __name__ == "__main__":
