@@ -272,7 +272,7 @@ def replay_debate(debate_path: str, numberOfAgents: int) -> None:
     df.to_csv(f"{csv_1_pathname}/{new_sub_folder}_data.csv", index=False)
     df2.to_csv(f"{csv_2_pathname}/{new_sub_folder}_data_2.csv", index=False)
     
-def replay_debate_with_new_agents(debate_path: str, number_agents) -> None:
+def replay_debate_with_new_agents(debate_path: str, number_agents: int, csv_folder="csv") -> None:
     """
     Replays the debate with the given debate number.
 
@@ -345,9 +345,8 @@ def replay_debate_with_new_agents(debate_path: str, number_agents) -> None:
     df2 = pd.DataFrame(exported_data_2)
 
     # Main csv folder which will contain every other csv folders
-    csv_folder = "csv"
     if not os.path.exists(csv_folder):
-        os.mkdir("csv")
+        os.mkdir(csv_folder)
 
     # Subfolder for csv_1 and csv_2
     csv_1_pathname = csv_folder + "/same_ug_new_agents_csv_1"
