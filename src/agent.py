@@ -51,6 +51,11 @@ class agent :
     def get_number(self):
         return int(self.name.split("_")[1])
     
+    def get_distance(self,PG):
+        
+        value=Hbs(self.OG,"0")
+        return value - Hbs(PG,"0")
+    
     def in_comfort_zone(self, PG) -> bool:
         """ Checks if the agent is in its comfort zone.
 
