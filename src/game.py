@@ -478,14 +478,17 @@ def export_results(data, public_graph, order, vp, nb_turn, agents) -> dict:
         historical_data.append(a.name)
         historical_data.append(a.in_comfort_zone(public_graph))
         historical_data.append(a.historical)
+        
+        
         j=0
         for i in a.historical.values() :
             if i!=None :
-                j=j+1
+                j=j+1 
         
         historical_data.append(j)
         historical_data.append(a.nbArg)
         historical_data.append(a.nbAtt)
+        historical_data.append(a.get_distance(public_graph))
         data[a.get_number()].append(historical_data)
 
     return data
