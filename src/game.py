@@ -38,7 +38,7 @@ def initialize_agents(UG, number_of_agents) -> list:
 
     return agents
 
-def run_protocol(UG, agents) -> float | dict:
+def run_protocol(UG: dict, agents: list) -> float | dict:
     """
     Simulates a debate game with automatically generated agents and argumentation frameworks.
     
